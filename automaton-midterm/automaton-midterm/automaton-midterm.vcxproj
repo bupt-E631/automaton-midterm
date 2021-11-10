@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{3a04d572-fe6c-4910-89cb-55652bafd98d}</ProjectGuid>
+    <ProjectGuid>{923022ca-5e69-4bd4-bc96-891cb3984a52}</ProjectGuid>
     <RootNamespace>automatonmidterm</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
