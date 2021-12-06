@@ -8,3 +8,12 @@
  */
 #include "epsilon_NFA.h"
 #include "NFA.h"
+epsilon_NFA::epsilon_NFA()
+{
+}
+NFA *epsilon_NFA::toNFA()
+{
+    NFA *NFA_converted = new NFA();
+    NFA_converted->terminalStatus = this->terminalStatus;
+    if ()
+}

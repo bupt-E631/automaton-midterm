@@ -1,13 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-12-05 12:19:57
- * @LastEditTime: 2021-12-06 00:48:01
+ * @LastEditTime: 2021-12-07 00:46:14
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \automaton-midterm\epsilon_NFA.h
  */
 #include <iostream>
 #include <vector>
+#include "FANode.h"
 #include "NFA.h"
 #define MAX_LENGTH 200
 using namespace std;
@@ -21,10 +22,11 @@ public:
     int numOfStatus;
     int beginStatus;
     vector<int> Status;
-    vector<vector<int>> transFunc;
+    vector<vector<FANode>> transFunc;
     vector<int> terminalStatus;
 
     //Function:
     epsilon_NFA();
     NFA *toNFA();
+    bool canReachTerminalWithEpsilon(int);
 };

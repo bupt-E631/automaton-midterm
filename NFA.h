@@ -24,4 +24,5 @@ public:
     vector<vector<int>> transFunc;
     vector<int> terminalStatus;
     //Function:
+    NFA();
 };
