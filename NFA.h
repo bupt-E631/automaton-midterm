@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <vector>
+#include "FANode.h"
 #define MAX_LENGTH 200
 using namespace std;
 class NFA
@@ -21,7 +22,7 @@ public:
     int numOfStatus;
     int beginStatus;
     vector<int> Status;
-    vector<vector<int>> transFunc;
+    vector<vector<FANode>> transFunc;
     vector<int> terminalStatus;
     //Function:
     NFA();

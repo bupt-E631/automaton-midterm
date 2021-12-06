@@ -8,6 +8,8 @@
  */
 #include <iostream>
 #include <vector>
+#include <queue>
+#include <stack>
 #include "FANode.h"
 #include "NFA.h"
 #define MAX_LENGTH 200
@@ -24,9 +26,9 @@ public:
     vector<int> Status;
     vector<vector<FANode>> transFunc;
     vector<int> terminalStatus;
-
     //Function:
     epsilon_NFA();
     NFA *toNFA();
     bool canReachTerminalWithEpsilon(int);
+    bool inTerminal(int);
 };
