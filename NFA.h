@@ -6,11 +6,10 @@
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \automaton-midterm\NFA.h
  */
-
+#pragma once
 #include <iostream>
 #include <vector>
 #include "FANode.h"
-#define MAX_LENGTH 200
 using namespace std;
 class NFA
 {
@@ -25,5 +24,17 @@ public:
     vector<vector<FANode>> transFunc;
     vector<int> terminalStatus;
     //Function:
-    NFA();
+    NFA(){};
+    void display()
+    {
+        for (int i = 0; i < this->transFunc.size(); i++)
+        {
+            cout << i << ": ";
+            for (int j = 0; j < this->transFunc[i].size(); j++)
+            {
+                cout << "(" << this->transFunc[i][j].input << "," << this->transFunc[i][j].output << ") ";
+            }
+            cout << endl;
+        }
+    }
 };

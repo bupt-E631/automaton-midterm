@@ -39,3 +39,8 @@ $正则表达式\to \varepsilon-NFA\to NFA\to DFA\to 最小化DFA$
 
 - -1 代表空转移
 - Node 里的 input 代表输入字符，output 代表转移状态
+
+## 2021/12/8
+
+- 卧槽!!!!!我$\varepsilon-NFA\to NFA$一遍过了!!!!!调试都没调试!!!!!
+- 我太佩服我自己了，允许我自己夸一下自己-zx
