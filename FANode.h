@@ -10,4 +10,4 @@ struct FANode
 {
     int input;
     int output;
-}
+};
