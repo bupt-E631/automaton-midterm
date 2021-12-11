@@ -28,10 +28,10 @@ public:
     vector<vector<FANode>> transFunc;
     vector<int> terminalStatus;
     //Function:
-    epsilon_NFA(){};
-    NFA *toNFA()
+    epsilon_NFA() {};
+    NFA* toNFA()
     {
-        NFA *NFA_converted = new NFA();
+        NFA* NFA_converted = new NFA();
         NFA_converted->numOfStatus = this->numOfStatus;
         NFA_converted->terminalStatus = this->terminalStatus;
         NFA_converted->beginStatus = this->beginStatus;
@@ -81,7 +81,7 @@ public:
             while (it != S2.end())
             {
                 int tmpStatus = *it;
-                FANode e{0, tmpStatus};
+                FANode e{ 0, tmpStatus };
                 NFA_converted->transFunc[i].push_back(e);
                 it++;
             }
@@ -103,7 +103,7 @@ public:
             while (it != S3.end())
             {
                 int tmpStatus = *it;
-                FANode e{1, tmpStatus};
+                FANode e{ 1, tmpStatus };
                 NFA_converted->transFunc[i].push_back(e);
                 it++;
             }
@@ -186,14 +186,25 @@ public:
     }
     void display()
     {
-        for (int i = 0; i < this->transFunc.size(); i++)
-        {
+        cout << "numOfStatus: " << this->numOfStatus << endl;
+        cout << "status: ";
+        for (auto x : this->Status)
+            cout << x << ' ';
+        cout << endl;
+        cout << "beginStatus: " << this->beginStatus << endl;
+        cout << "terminalStatus: " << this->terminalStatus[0] << endl;
+        cout << "transfer Functions: " << endl;
+        for (int i = 0;i < this->numOfStatus;i++) {
             cout << i << ": ";
-            for (int j = 0; j < this->transFunc[i].size(); j++)
-            {
-                cout << "(" << this->transFunc[i][j].input << "," << this->transFunc[i][j].output << ") ";
+            if (this->transFunc[i].empty()) {
+                cout << "no transfer function!";
+                continue;
+            }
+            for (auto x : this->transFunc[i]) {
+                cout << '(' << x.input << ',' << x.output << ')' << ' ';
             }
             cout << endl;
         }
+        cout << endl;
     }
 };
