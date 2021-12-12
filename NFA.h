@@ -118,7 +118,7 @@ public:
         for (int i = 0; i < transFunc.size(); i++){
             bool f0 = false;
             bool f1 = false;
-            for (int j = 0; j < transFunc[i].size(); j++) {
+            for (int j = 0; j < transFunc[i].size()-1; j++) {
                 if (transFunc[i][j].input == 0) {
                     f0 = true;
                 } else if (transFunc[i][j].input == 1) {
