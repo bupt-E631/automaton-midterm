@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-11-10 11:25:05
- * @LastEditTime: 2021-12-05 13:41:06
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-12-12 21:51:18
+ * @LastEditors: Karigen B
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \automaton-midterm\README.md
 -->
@@ -64,5 +64,6 @@ $正则表达式\to \varepsilon-NFA\to NFA\to DFA\to 最小化DFA$
 - 读取完后缀表达式后，栈中只会剩下一台epsilon-NFA ,即为所求。
 - 我写完了，yyh加油，别学你那破爪哇了，作业都写不完了，赶紧把NFA转DFA的代码给写完
 
-  
-
+## 2021/12/12 by KarigenB
+* 感觉有一百几十年没写C++了,只能说还能根基尚在,还撑得住
+* 正经书上的转换方法,将状态合并
