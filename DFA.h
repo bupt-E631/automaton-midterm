@@ -31,10 +31,13 @@ public:
             cout << x << ' ';
         cout << endl;
         cout << "beginStatus: " << this->beginStatus << endl;
-        cout << "terminalStatus: " << this->terminalStatus[0] << endl;
+        cout << "terminalStatus: ";
+        for (auto x : this->terminalStatus)
+            cout << x << ' ';
+        cout << endl;
         cout << "transfer Functions: " << endl;
         for (int i = 0;i < this->numOfStatus;i++) {
-            cout << i << ": ";
+            cout << this->Status[i] << ": ";
             if (this->transFunc[i].empty()) {
                 cout << "no transfer function!" << endl;
                 continue;
