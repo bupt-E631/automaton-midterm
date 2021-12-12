@@ -22,4 +22,28 @@ public:
     vector<int> Status; // 状态
     vector<vector<FANode>> transFunc; // 表
     vector<int> terminalStatus; // 结束状态
+
+    void display()
+    {
+        cout << "numOfStatus: " << this->numOfStatus << endl;
+        cout << "status: ";
+        for (auto x : this->Status)
+            cout << x << ' ';
+        cout << endl;
+        cout << "beginStatus: " << this->beginStatus << endl;
+        cout << "terminalStatus: " << this->terminalStatus[0] << endl;
+        cout << "transfer Functions: " << endl;
+        for (int i = 0;i < this->numOfStatus;i++) {
+            cout << i << ": ";
+            if (this->transFunc[i].empty()) {
+                cout << "no transfer function!" << endl;
+                continue;
+            }
+            for (auto x : this->transFunc[i]) {
+                cout << '(' << x.input << ',' << x.output << ')' << ' ';
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
 };
