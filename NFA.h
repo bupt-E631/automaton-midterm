@@ -30,11 +30,11 @@ public:
     vector<vector<FANode>> transFuncBak;
     vector<int> terminalStatus; // 结束状态
     vector<int> terminalStatusBak; // 结束状态
-    NFA(){};
+    NFA() {};
     //Function:
     // 
 
-    DFA* toDFA(){
+    DFA* toDFA() {
         transFuncBak = transFunc;
         terminalStatusBak = terminalStatus;
         //transFunc.clear();
@@ -47,9 +47,9 @@ public:
         }
 
         convert();
-        
+
         // 返回
-        
+
         DFA* dfa = new DFA();
         dfa->beginStatus = this->beginStatus;
         dfa->numOfStatus = this->numOfStatus;
@@ -59,14 +59,14 @@ public:
         return dfa;
     }
 
-    void FANodeExtend(FANode node){
+    void FANodeExtend(FANode node) {
         //
         for (int i = 0; i < Status.size(); i++) {
-            if(Status[i] == node.output){
+            if (Status[i] == node.output) {
                 return;
             }
         }
-        
+
         //构建新的一行
         Status.push_back(node.output);//放入状态表
         numOfStatus++;
@@ -74,33 +74,33 @@ public:
 
         //处理新状态
         int count = to_string(node.output).length();//需要比较的次数
-        int is=0;//要分析的状态
+        int is = 0;//要分析的状态
         for (int k = 0; k <= 1; k++) {//输入0或1
             is = node.output;
             set<int, greater<int>> SSet;
             for (int i = 0; i < count; i++) {
                 int tis = is % 10;
                 for (int j = 0; j < transFuncBak[tis].size(); j++) {
-                    if(transFuncBak[tis][j].input == k){ // 0或1
+                    if (transFuncBak[tis][j].input == k) { // 0或1
                         SSet.insert(transFuncBak[tis][j].output);
                     }
                 }
-            
+
                 is /= 10;
             }
 
-            if(SSet.size()==0){
+            if (SSet.size() == 0) {
                 continue;
             }
 
             bool isTer = false;
             for (int i = 0; i < terminalStatusBak.size() && !isTer; i++) {
-                if(SSet.count(terminalStatusBak[i])){
+                if (SSet.count(terminalStatusBak[i])) {
                     isTer = true;
                 }
             }
-            
-            if(isTer){
+
+            if (isTer) {
                 terminalStatus.push_back(node.output);
             }
 
@@ -110,55 +110,57 @@ public:
                 rs *= 10;
                 rs += *iter;
             }
-            transFunc[transFunc.size()-1].push_back(FANode(k, rs));
+            transFunc[transFunc.size() - 1].push_back(FANode(k, rs));
         }
     }
 
-    void FANodeConvert(){
-        for (int i = 0; i < transFunc.size(); i++){
+    void FANodeConvert() {
+        for (int i = 0; i < transFunc.size(); i++) {
             bool f0 = false;
             bool f1 = false;
             for (int j = 0; j < transFunc[i].size(); j++) {
                 if (transFunc[i][j].input == 0) {
                     f0 = true;
-                } else if (transFunc[i][j].input == 1) {
+                }
+                else if (transFunc[i][j].input == 1) {
                     f1 = true;
                 }
             }
 
             int in0 = 0;
             int in1 = 0;
-            for (int j = transFunc[i].size(); j >= 0 ; j--){ // 整数最高位不能是0
+            for (int j = transFunc[i].size() - 1; j >= 0; j--) { // 整数最高位不能是0
                 if (transFunc[i][j].input == 0) { // 输入是0的情况
                     in0 *= 10;
                     in0 += transFunc[i][j].output;
-                } else if (transFunc[i][j].input == 1){ // 输入是1的情况
+                }
+                else if (transFunc[i][j].input == 1) { // 输入是1的情况
                     in1 *= 10;
                     in1 += transFunc[i][j].output;
                 }
             }
 
             transFunc[i].clear();
-            if(f0){
+            if (f0) {
                 transFunc[i].push_back(FANode(0, in0));
             }
 
-            if(f1){
+            if (f1) {
                 transFunc[i].push_back(FANode(1, in1));
             }
         }
     }
 
-    void convert(){
+    void convert() {
         map<int, int> map;
         for (int i = 0; i < Status.size(); i++) {
             map.insert(pair<int, int>(Status[i], i));
         }
-        
+
         for (int i = 0; i < Status.size(); i++) {
             Status[i] = i;
         }
-        
+
         for (int i = 0; i < transFunc.size(); i++) {
             for (int j = 0; j < transFunc[i].size(); j++) {
                 transFunc[i][j].output = map.find(transFunc[i][j].output)->second;
@@ -168,7 +170,7 @@ public:
         for (int i = 0; i < terminalStatus.size(); i++) {
             terminalStatus[i] = map.find(terminalStatus[i])->second;
         }
-        
+
     }
 
     void display()
