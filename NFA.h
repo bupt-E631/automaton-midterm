@@ -46,7 +46,7 @@ public:
             }
         }
 
-        convert();
+        //convert();
 
         // 返回
 
@@ -175,14 +175,28 @@ public:
 
     void display()
     {
-        for (int i = 0; i < this->transFunc.size(); i++)
-        {
-            cout << Status[i] << ": ";
-            for (int j = 0; j < this->transFunc[i].size(); j++)
-            {
-                cout << "(" << this->transFunc[i][j].input << "," << this->transFunc[i][j].output << ") ";
+        cout << "numOfStatus: " << this->numOfStatus << endl;
+        cout << "status: ";
+        for (auto x : this->Status)
+            cout << x << ' ';
+        cout << endl;
+        cout << "beginStatus: " << this->beginStatus << endl;
+        cout << "terminalStatus: ";
+        for (auto x : this->terminalStatus)
+            cout << x << ' ';
+        cout << endl;
+        cout << "transfer Functions: " << endl;
+        for (int i = 0;i < this->numOfStatus;i++) {
+            cout << i << ": ";
+            if (this->transFunc[i].empty()) {
+                cout << "no transfer function!";
+                continue;
+            }
+            for (auto x : this->transFunc[i]) {
+                cout << '(' << x.input << ',' << x.output << ')' << ' ';
             }
             cout << endl;
         }
+        cout << endl;
     }
 };
