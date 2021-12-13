@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-12-05 12:19:48
- * @LastEditTime: 2021-12-13 21:04:15
+ * @LastEditTime: 2021-12-14 01:01:11
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \automaton-midterm\DFA.h
@@ -128,6 +128,7 @@ public:
     {
         MinimizedDFA *converted = new MinimizedDFA();
         removeUnrelatedStatus();
+        display();
         for (int i = 0; i < numOfStatus; i++) //初始化区分表
         {
             vector<int> tmp;
@@ -151,7 +152,14 @@ public:
             for (int j = 0; j < nonTerminalStatus.size(); j++)
                 DistinguishableTable[terminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][terminalStatus[i]] = 1;
         }
-
+        for (int i = 0; i < Status.size(); i++) //处理陷阱状态，也标记
+        {
+            for (int j = 0; j < Status.size(); j++)
+                if ((outputwith(0, Status[i]) == -1 && outputwith(0, Status[j]) != -1) || (outputwith(0, Status[j]) == -1 && outputwith(0, Status[i]) != -1) || (outputwith(1, Status[j]) == -1 && outputwith(1, Status[i]) != -1) || (outputwith(1, Status[i]) == -1 && outputwith(1, Status[j]) != -1))
+                {
+                    DistinguishableTable[Status[i]][Status[j]] = DistinguishableTable[Status[j]][Status[i]] = 1;
+                }
+        }
         for (int i = 0; i < terminalStatus.size(); i++) //F×F 递归标记
         {
             for (int j = 0; j < terminalStatus.size(); j++)
@@ -165,14 +173,15 @@ public:
                 int output4 = outputwith(1, terminalStatus[j]);
                 if (output1 != -1 && output2 != -1)
                 {
-                    flag1 = false;
+
                     if (DistinguishableTable[output1][output2])
                     {
+                        flag1 = false;
                         //(q,a)(p,a)已被标记
-                        DistinguishableTable[nonTerminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][nonTerminalStatus[i]] = 1;
+                        DistinguishableTable[terminalStatus[i]][terminalStatus[j]] = DistinguishableTable[terminalStatus[j]][terminalStatus[i]] = 1;
                         for (int k = 0; k < RelationList.size(); k++)
                         {
-                            if (RelationList[k].count(make_pair(nonTerminalStatus[i], nonTerminalStatus[j])) || RelationList[k].count(make_pair(nonTerminalStatus[j], nonTerminalStatus[i])))
+                            if (RelationList[k].count(make_pair(terminalStatus[i], terminalStatus[j])) || RelationList[k].count(make_pair(terminalStatus[j], terminalStatus[i])))
                             {
                                 set<pair<int, int>>::iterator it = RelationList[k].begin();
                                 while (it != RelationList[k].end())
@@ -184,17 +193,37 @@ public:
                             }
                         }
                     }
+                    /* else
+                    {
+                        bool flag = true;
+                        for (int k = 0; k < RelationList.size(); k++)
+                        {
+                            if (RelationList[k].count(make_pair(output1, output2)) || RelationList[k].count(make_pair(output2, output1)))
+                            {
+                                RelationList[k].insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
+                                flag = false;
+                            }
+                        }
+                        if (flag)
+                        {
+                            set<pair<int, int>> tmp;
+                            tmp.insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
+                            tmp.insert(make_pair(output1, output2));
+                            RelationList.push_back(tmp);
+                        }
+                    }*/
                 }
                 if (output3 != -1 && output4 != -1)
                 {
-                    flag2 = false;
+
                     if (DistinguishableTable[output3][output4])
                     {
+                        flag2 = false;
                         //(q,a)(p,a)已被标记
-                        DistinguishableTable[nonTerminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][nonTerminalStatus[i]] = 1;
+                        DistinguishableTable[terminalStatus[i]][terminalStatus[j]] = DistinguishableTable[terminalStatus[j]][terminalStatus[i]] = 1;
                         for (int k = 0; k < RelationList.size(); k++)
                         {
-                            if (RelationList[k].count(make_pair(nonTerminalStatus[i], nonTerminalStatus[j])) || RelationList[k].count(make_pair(nonTerminalStatus[j], nonTerminalStatus[i])))
+                            if (RelationList[k].count(make_pair(terminalStatus[i], terminalStatus[j])) || RelationList[k].count(make_pair(terminalStatus[j], terminalStatus[i])))
                             {
                                 set<pair<int, int>>::iterator it = RelationList[k].begin();
                                 while (it != RelationList[k].end())
@@ -206,6 +235,25 @@ public:
                             }
                         }
                     }
+                    /* else
+                    {
+                        bool flag = true;
+                        for (int k = 0; k < RelationList.size(); k++)
+                        {
+                            if (RelationList[k].count(make_pair(output3, output4)) || RelationList[k].count(make_pair(output4, output3)))
+                            {
+                                RelationList[k].insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
+                                flag = false;
+                            }
+                        }
+                        if (flag)
+                        {
+                            set<pair<int, int>> tmp;
+                            tmp.insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
+                            tmp.insert(make_pair(output3, output4));
+                            RelationList.push_back(tmp);
+                        }
+                    }*/
                 }
                 if (flag1 && flag2)
                 {
@@ -256,55 +304,151 @@ public:
             {
                 if (i == j)
                     continue;
+                bool flag1 = true, flag2 = true;
                 int output1 = outputwith(0, nonTerminalStatus[i]);
                 int output2 = outputwith(0, nonTerminalStatus[j]);
                 int output3 = outputwith(1, nonTerminalStatus[i]);
                 int output4 = outputwith(1, nonTerminalStatus[j]);
                 if (output1 != -1 && output2 != -1)
                 {
+
                     if (DistinguishableTable[output1][output2])
                     {
+                        flag1 = false;
                         //(q,a)(p,a)已被标记
+
                         DistinguishableTable[nonTerminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][nonTerminalStatus[i]] = 1;
-                        for (int k = 0; k < RelationList.size(); k++)
+                        queue<pair<int, int>> Q;
+                        Q.push(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
+                        while (!Q.empty())
                         {
-                            if (RelationList[k].count(make_pair(nonTerminalStatus[i], nonTerminalStatus[j])) || RelationList[k].count(make_pair(nonTerminalStatus[j], nonTerminalStatus[i])))
+                            pair<int, int> tmp = Q.front();
+                            Q.pop();
+                            pair<int, int> ttmp{tmp.second, tmp.first};
+                            for (int k = 0; k < RelationList.size(); k++)
                             {
-                                set<pair<int, int>>::iterator it = RelationList[k].begin();
-                                while (it != RelationList[k].end())
+                                if (RelationList[k].count(tmp))
                                 {
-                                    pair<int, int> tmp = *it;
-                                    DistinguishableTable[tmp.first][tmp.second] = DistinguishableTable[tmp.second][tmp.first] = 1;
-                                    it++;
+                                    RelationList[k].erase(tmp);
+                                    set<pair<int, int>>::iterator it = RelationList[k].begin();
+                                    while (it != RelationList[k].end())
+                                    {
+                                        pair<int, int> tmp1 = *it;
+                                        DistinguishableTable[tmp1.first][tmp1.second] = DistinguishableTable[tmp1.second][tmp1.first] = 1;
+                                        Q.push(tmp1);
+
+                                        it++;
+                                        RelationList[k].erase(tmp1);
+                                    }
+                                }
+                                if (RelationList[k].count(ttmp))
+                                {
+                                    RelationList[k].erase(ttmp);
+                                    set<pair<int, int>>::iterator it = RelationList[k].begin();
+                                    while (it != RelationList[k].end())
+                                    {
+                                        pair<int, int> tmp1 = *it;
+                                        DistinguishableTable[tmp1.first][tmp1.second] = DistinguishableTable[tmp1.second][tmp1.first] = 1;
+                                        Q.push(tmp1);
+
+                                        it++;
+                                        RelationList[k].erase(tmp1);
+                                    }
                                 }
                             }
                         }
                     }
+                    /*else
+                    {
+                        bool flag = true;
+                        for (int k = 0; k < RelationList.size(); k++)
+                        {
+                            if (RelationList[k].count(make_pair(output1, output2)) || RelationList[k].count(make_pair(output2, output1)))
+                            {
+                                RelationList[k].insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
+                                flag = false;
+                            }
+                        }
+                        if (flag)
+                        {
+                            set<pair<int, int>> tmp;
+                            tmp.insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
+                            tmp.insert(make_pair(output1, output2));
+                            RelationList.push_back(tmp);
+                        }
+                    }*/
                 }
-                else if (output3 != -1 && output4 != -1)
+                if (output3 != -1 && output4 != -1)
                 {
+
                     if (DistinguishableTable[output3][output4])
                     {
+                        flag2 = false;
                         //(q,a)(p,a)已被标记
                         DistinguishableTable[nonTerminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][nonTerminalStatus[i]] = 1;
-                        for (int k = 0; k < RelationList.size(); k++)
+                        queue<pair<int, int>> Q;
+                        Q.push(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
+                        while (!Q.empty())
                         {
-                            if (RelationList[k].count(make_pair(nonTerminalStatus[i], nonTerminalStatus[j])) || RelationList[k].count(make_pair(nonTerminalStatus[j], nonTerminalStatus[i])))
+                            pair<int, int> tmp = Q.front();
+                            Q.pop();
+                            pair<int, int> ttmp{tmp.second, tmp.first};
+                            for (int k = 0; k < RelationList.size(); k++)
                             {
-                                set<pair<int, int>>::iterator it = RelationList[k].begin();
-                                while (it != RelationList[k].end())
+                                if (RelationList[k].count(tmp))
                                 {
-                                    pair<int, int> tmp = *it;
-                                    DistinguishableTable[tmp.first][tmp.second] = DistinguishableTable[tmp.second][tmp.first] = 1;
-                                    it++;
+                                    RelationList[k].erase(tmp);
+                                    set<pair<int, int>>::iterator it = RelationList[k].begin();
+                                    while (it != RelationList[k].end())
+                                    {
+                                        pair<int, int> tmp1 = *it;
+                                        DistinguishableTable[tmp1.first][tmp1.second] = DistinguishableTable[tmp1.second][tmp1.first] = 1;
+                                        Q.push(tmp1);
+
+                                        it++;
+                                        RelationList[k].erase(tmp1);
+                                    }
+                                }
+                                if (RelationList[k].count(ttmp))
+                                {
+                                    RelationList[k].erase(ttmp);
+                                    set<pair<int, int>>::iterator it = RelationList[k].begin();
+                                    while (it != RelationList[k].end())
+                                    {
+                                        pair<int, int> tmp1 = *it;
+                                        DistinguishableTable[tmp1.first][tmp1.second] = DistinguishableTable[tmp1.second][tmp1.first] = 1;
+                                        Q.push(tmp1);
+
+                                        it++;
+                                        RelationList[k].erase(tmp1);
+                                    }
                                 }
                             }
                         }
                     }
+                    /* else
+                    {
+                        bool flag = true;
+                        for (int k = 0; k < RelationList.size(); k++)
+                        {
+                            if (RelationList[k].count(make_pair(output3, output4)) || RelationList[k].count(make_pair(output4, output3)))
+                            {
+                                RelationList[k].insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
+                                flag = false;
+                            }
+                        }
+                        if (flag)
+                        {
+                            set<pair<int, int>> tmp;
+                            tmp.insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
+                            tmp.insert(make_pair(output3, output4));
+                            RelationList.push_back(tmp);
+                        }
+                    }*/
                 }
-                else
+                if (flag1 && flag2)
                 {
-                    if (output1 != output2 && (nonTerminalStatus[i] != output1 && nonTerminalStatus[j] != output2))
+                    if (output1 != output2 && (nonTerminalStatus[i] != output1 || nonTerminalStatus[j] != output2))
                     {
                         bool flag = true;
                         for (int k = 0; k < RelationList.size(); k++)
@@ -391,6 +535,7 @@ public:
         RelationStatusList.push_back(StatusLeaved); //状态分类完成
         vector<vector<FANode>> newTransFunc;
         //开始正式转化
+
         converted->numOfStatus = RelationStatusList.size(); //状态数
         for (int i = 0; i < RelationStatusList.size(); i++)
         { //结束状态
@@ -454,7 +599,11 @@ public:
 
             converted->Status.push_back(i);
         }
+        mydisplay();
+        converted->display();
+
         converted->removeUnrelatedStatus();
+
         return converted;
     }
     void mydisplay()
