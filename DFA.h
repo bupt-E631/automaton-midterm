@@ -1,13 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-12-05 12:19:48
- * @LastEditTime: 2021-12-13 17:28:48
+ * @LastEditTime: 2021-12-13 21:04:15
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \automaton-midterm\DFA.h
  */
 #include <iostream>
 #include <vector>
+#include <map>
 #include "MinimizedDFA.h"
 #include "FANode.h"
 using namespace std;
@@ -57,9 +58,76 @@ public:
         }
         return -1;
     }
+    void removeUnrelatedStatus()
+    {
+        set<int> usefulStatus;
+        vector<int> visited;
+        for (int i = 0; i < numOfStatus; i++)
+            visited.push_back(0);
+        stack<int> S;
+        S.push(beginStatus);
+        visited[beginStatus] = 1;
+        usefulStatus.insert(beginStatus);
+        while (!S.empty())
+        {
+            int tmp = S.top();
+            S.pop();
+            for (int i = 0; i < transFunc[tmp].size(); i++)
+            {
+                if (!visited[transFunc[tmp][i].output])
+                {
+                    visited[transFunc[tmp][i].output] = 1;
+                    S.push(transFunc[tmp][i].output);
+                    usefulStatus.insert(transFunc[tmp][i].output);
+                }
+            }
+        }
+
+        vector<vector<FANode>> newtransfunc;
+        vector<int> newterminal;
+        vector<int> newstatus;
+        map<int, int> M;
+        int count = 0;
+        set<int>::iterator it = usefulStatus.begin();
+        while (it != usefulStatus.end())
+        {
+            int tmp = *it;
+            M.insert(make_pair(tmp, count++));
+            it++;
+        }
+        it = usefulStatus.begin();
+        while (it != usefulStatus.end())
+        {
+            newtransfunc.push_back(transFunc[*it]);
+            it++;
+        }
+        it = usefulStatus.begin();
+        while (it != usefulStatus.end())
+        {
+            if (interminal(*it))
+                newterminal.push_back(M.at(*it));
+            it++;
+        }
+        for (int i = 0; i < newtransfunc.size(); i++)
+        {
+            for (int j = 0; j < newtransfunc[i].size(); j++)
+            {
+                newtransfunc[i][j].output = M.at(newtransfunc[i][j].output);
+            }
+        }
+        numOfStatus = usefulStatus.size();
+        for (int i = 0; i < numOfStatus; i++)
+        {
+            newstatus.push_back(i);
+        }
+        Status = newstatus;
+        transFunc = newtransfunc;
+        terminalStatus = newterminal;
+    }
     MinimizedDFA *toMinimizedDFA()
     {
         MinimizedDFA *converted = new MinimizedDFA();
+        removeUnrelatedStatus();
         for (int i = 0; i < numOfStatus; i++) //初始化区分表
         {
             vector<int> tmp;
@@ -90,30 +158,56 @@ public:
             {
                 if (i == j)
                     continue;
-
+                bool flag1 = true, flag2 = true;
                 int output1 = outputwith(0, terminalStatus[i]);
                 int output2 = outputwith(0, terminalStatus[j]);
                 int output3 = outputwith(1, terminalStatus[i]);
                 int output4 = outputwith(1, terminalStatus[j]);
-                if (DistinguishableTable[output1][output2] || DistinguishableTable[output3][output4])
+                if (output1 != -1 && output2 != -1)
                 {
-                    //(q,a)(p,a)已被标记
-                    DistinguishableTable[terminalStatus[i]][terminalStatus[j]] = DistinguishableTable[terminalStatus[j]][terminalStatus[i]] = 1;
-                    for (int k = 0; k < RelationList.size(); k++)
+                    flag1 = false;
+                    if (DistinguishableTable[output1][output2])
                     {
-                        if (RelationList[k].count(make_pair(terminalStatus[i], terminalStatus[j])) || RelationList[k].count(make_pair(terminalStatus[j], terminalStatus[i])))
+                        //(q,a)(p,a)已被标记
+                        DistinguishableTable[nonTerminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][nonTerminalStatus[i]] = 1;
+                        for (int k = 0; k < RelationList.size(); k++)
                         {
-                            set<pair<int, int>>::iterator it = RelationList[k].begin();
-                            while (it != RelationList[k].end())
+                            if (RelationList[k].count(make_pair(nonTerminalStatus[i], nonTerminalStatus[j])) || RelationList[k].count(make_pair(nonTerminalStatus[j], nonTerminalStatus[i])))
                             {
-                                pair<int, int> tmp = *it;
-                                DistinguishableTable[tmp.first][tmp.second] = DistinguishableTable[tmp.second][tmp.first] = 1;
-                                it++;
+                                set<pair<int, int>>::iterator it = RelationList[k].begin();
+                                while (it != RelationList[k].end())
+                                {
+                                    pair<int, int> tmp = *it;
+                                    DistinguishableTable[tmp.first][tmp.second] = DistinguishableTable[tmp.second][tmp.first] = 1;
+                                    it++;
+                                }
                             }
                         }
                     }
                 }
-                else
+                if (output3 != -1 && output4 != -1)
+                {
+                    flag2 = false;
+                    if (DistinguishableTable[output3][output4])
+                    {
+                        //(q,a)(p,a)已被标记
+                        DistinguishableTable[nonTerminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][nonTerminalStatus[i]] = 1;
+                        for (int k = 0; k < RelationList.size(); k++)
+                        {
+                            if (RelationList[k].count(make_pair(nonTerminalStatus[i], nonTerminalStatus[j])) || RelationList[k].count(make_pair(nonTerminalStatus[j], nonTerminalStatus[i])))
+                            {
+                                set<pair<int, int>>::iterator it = RelationList[k].begin();
+                                while (it != RelationList[k].end())
+                                {
+                                    pair<int, int> tmp = *it;
+                                    DistinguishableTable[tmp.first][tmp.second] = DistinguishableTable[tmp.second][tmp.first] = 1;
+                                    it++;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (flag1 && flag2)
                 {
                     if (output1 != output2 && (terminalStatus[i] != output1 && terminalStatus[j] != output2))
                     {
@@ -166,20 +260,44 @@ public:
                 int output2 = outputwith(0, nonTerminalStatus[j]);
                 int output3 = outputwith(1, nonTerminalStatus[i]);
                 int output4 = outputwith(1, nonTerminalStatus[j]);
-                if (DistinguishableTable[output1][output2] || DistinguishableTable[output3][output4])
+                if (output1 != -1 && output2 != -1)
                 {
-                    //(q,a)(p,a)已被标记
-                    DistinguishableTable[nonTerminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][nonTerminalStatus[i]] = 1;
-                    for (int k = 0; k < RelationList.size(); k++)
+                    if (DistinguishableTable[output1][output2])
                     {
-                        if (RelationList[k].count(make_pair(nonTerminalStatus[i], nonTerminalStatus[j])) || RelationList[k].count(make_pair(nonTerminalStatus[j], nonTerminalStatus[i])))
+                        //(q,a)(p,a)已被标记
+                        DistinguishableTable[nonTerminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][nonTerminalStatus[i]] = 1;
+                        for (int k = 0; k < RelationList.size(); k++)
                         {
-                            set<pair<int, int>>::iterator it = RelationList[k].begin();
-                            while (it != RelationList[k].end())
+                            if (RelationList[k].count(make_pair(nonTerminalStatus[i], nonTerminalStatus[j])) || RelationList[k].count(make_pair(nonTerminalStatus[j], nonTerminalStatus[i])))
                             {
-                                pair<int, int> tmp = *it;
-                                DistinguishableTable[tmp.first][tmp.second] = DistinguishableTable[tmp.second][tmp.first] = 1;
-                                it++;
+                                set<pair<int, int>>::iterator it = RelationList[k].begin();
+                                while (it != RelationList[k].end())
+                                {
+                                    pair<int, int> tmp = *it;
+                                    DistinguishableTable[tmp.first][tmp.second] = DistinguishableTable[tmp.second][tmp.first] = 1;
+                                    it++;
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (output3 != -1 && output4 != -1)
+                {
+                    if (DistinguishableTable[output3][output4])
+                    {
+                        //(q,a)(p,a)已被标记
+                        DistinguishableTable[nonTerminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][nonTerminalStatus[i]] = 1;
+                        for (int k = 0; k < RelationList.size(); k++)
+                        {
+                            if (RelationList[k].count(make_pair(nonTerminalStatus[i], nonTerminalStatus[j])) || RelationList[k].count(make_pair(nonTerminalStatus[j], nonTerminalStatus[i])))
+                            {
+                                set<pair<int, int>>::iterator it = RelationList[k].begin();
+                                while (it != RelationList[k].end())
+                                {
+                                    pair<int, int> tmp = *it;
+                                    DistinguishableTable[tmp.first][tmp.second] = DistinguishableTable[tmp.second][tmp.first] = 1;
+                                    it++;
+                                }
                             }
                         }
                     }
@@ -306,7 +424,7 @@ public:
             if (flag)
                 break;
         }
-        //transfunc
+
         for (int i = 0; i < converted->numOfStatus; i++)
         {
             vector<FANode> tmp1;
@@ -336,13 +454,20 @@ public:
 
             converted->Status.push_back(i);
         }
-        mydisplay();
+        converted->removeUnrelatedStatus();
         return converted;
     }
     void mydisplay()
     {
         cout << endl;
-
+        for (int i = 0; i < DistinguishableTable.size(); i++)
+        {
+            for (int j = 0; j < DistinguishableTable.size(); j++)
+            {
+                cout << DistinguishableTable[i][j] << " ";
+            }
+            cout << endl;
+        }
         for (int i = 0; i < RelationList.size(); i++)
         {
             set<pair<int, int>>::iterator it = RelationList[i].begin();

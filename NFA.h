@@ -54,11 +54,10 @@ public:
     };
     //Function:
 
-
-    
-    DFA* toDFA(bool isThis){
-        transFuncConvert();//垃圾架构转换为我的架构
-        statusMapping();//垃圾架构状态向量转换为我的向量
+    DFA *toDFA(bool isThis)
+    {
+        transFuncConvert(); //垃圾架构转换为我的架构
+        statusMapping();    //垃圾架构状态向量转换为我的向量
         //根据我的表去做转换
         for (int i = 0; i < myTransFunc.size(); i++)
         {
@@ -70,7 +69,7 @@ public:
 
         //加Terminal
         addTer();
-        
+
         //myStatus是转换的关键
 
         //将我的状态映射将垃圾架构的映射改了
@@ -82,7 +81,7 @@ public:
         //将我的结束状态转换为垃圾结束状态
         toTerminal();
 
-        DFA* dfa = new DFA();
+        DFA *dfa = new DFA();
         dfa->beginStatus = this->beginStatus;
         dfa->numOfStatus = this->numOfStatus;
         dfa->Status = this->Status;
@@ -92,81 +91,101 @@ public:
         return dfa;
     }
 
-    void toTerminal(){
+    void toTerminal()
+    {
         //清空原结束状态表
         terminalStatus.clear();
-        for (int i = 0; i < myTer.size(); i++) {
+        for (int i = 0; i < myTer.size(); i++)
+        {
             //用我的结束状态表对照myStatus找位置存入
-            for (int j = 0; j < Status.size(); j++) {//状态位置
-                if(isSameSet(myTer[i], myStatus[j])){
+            for (int j = 0; j < Status.size(); j++)
+            { //状态位置
+                if (isSameSet(myTer[i], myStatus[j]))
+                {
                     terminalStatus.push_back(j);
                 }
             }
-            
         }
-        
     }
 
-    void toTransFunc(){
+    void toTransFunc()
+    {
         transFunc.clear();
         //表先建起来
-        for (int i = 0; i < myTransFunc.size(); i++) {
+        for (int i = 0; i < myTransFunc.size(); i++)
+        {
             transFunc.push_back(vector<FANode>());
         }
-        
+
         //修改数据
-        for (int i = 0; i < myTransFunc.size(); i++) {
+        for (int i = 0; i < myTransFunc.size(); i++)
+        {
             //输入0
-            if(myTransFunc[i][0].size() == 0){
+            if (myTransFunc[i][0].size() == 0)
+            {
                 //空集合,说明不接受,直接跳过
-            } else {//接收
-                for (int j = 0; j < Status.size(); j++) {
-                    if(isSameSet(myTransFunc[i][0], myStatus[j])){
+            }
+            else
+            { //接收
+                for (int j = 0; j < Status.size(); j++)
+                {
+                    if (isSameSet(myTransFunc[i][0], myStatus[j]))
+                    {
                         transFunc[i].push_back(FANode(0, j));
                     }
                 }
-                
             }
             //输入1
-            if(myTransFunc[i][1].size() != 0){
-                for (int j = 0; j < Status.size(); j++) {
-                    if(isSameSet(myTransFunc[i][1], myStatus[j])){
+            if (myTransFunc[i][1].size() != 0)
+            {
+                for (int j = 0; j < Status.size(); j++)
+                {
+                    if (isSameSet(myTransFunc[i][1], myStatus[j]))
+                    {
                         transFunc[i].push_back(FANode(1, j));
                     }
                 }
             }
         }
-        
     }
 
-    bool isSameSet(set<int> s0, set<int> s1){
-        if(s0.size() != s1.size()){
+    bool isSameSet(set<int> s0, set<int> s1)
+    {
+        if (s0.size() != s1.size())
+        {
             return false;
-        } else {
+        }
+        else
+        {
             set<int> temp;
             set_symmetric_difference(s0.begin(), s0.end(), s1.begin(), s1.end(), inserter(temp, temp.begin()));
             return temp.size() == 0;
         }
     }
 
-    void toStatus(){
-        for (int i = Status.size(); i < myStatus.size(); i++) {
+    void toStatus()
+    {
+        for (int i = Status.size(); i < myStatus.size(); i++)
+        {
             //根据我的映射表将Status修改过来
             Status.push_back(i);
         }
-        
     }
 
-    void addTer(){
-        for (int i = 0; i < myStatus.size(); i++) {
-            for (int j = 0; j < terminalStatus.size(); j++) {//如果包含原生结束状态,说明此状态是结束状态
-                if(myStatus[i].count(terminalStatus[j]) != 0){
+    void addTer()
+    {
+        for (int i = 0; i < myStatus.size(); i++)
+        {
+            for (int j = 0; j < terminalStatus.size(); j++)
+            { //如果包含原生结束状态,说明此状态是结束状态
+                if (myStatus[i].count(terminalStatus[j]) != 0)
+                {
                     myTer.push_back(myStatus[i]);
                 }
             }
         }
     }
-*/
+
     void formExtend(set<int> unit)
     {
         //先判断这个状态是否为空
