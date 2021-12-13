@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-12-05 12:20:54
- * @LastEditTime: 2021-12-13 15:08:13
+ * @LastEditTime: 2021-12-13 16:51:09
  * @LastEditors: Karigen B
  * @Description: 完成NFA到DFA的转换
  * @FilePath: \automaton-midterm\NFA.h
@@ -45,17 +45,20 @@ public:
     vector<vector<FANode>> transFunc; // 表
     vector<vector<FANode>> transFuncBak;
     vector<vector<set<int>>> myTransFunc;
-    vector<int> terminalStatus;    // 结束状态
+
+    vector<int> terminalStatus; // 结束状态
+    vector<set<int>> myTer;
     vector<int> terminalStatusBak; // 结束状态
     NFA(){
 
     };
     //Function:
-    /*
-    NFA *toDFA(bool isThis)
-    {
-        transFuncConvert(); //垃圾架构转换为我的架构
-        statusMapping();    //垃圾架构状态向量转换为我的向量
+
+
+    
+    DFA* toDFA(bool isThis){
+        transFuncConvert();//垃圾架构转换为我的架构
+        statusMapping();//垃圾架构状态向量转换为我的向量
         //根据我的表去做转换
         for (int i = 0; i < myTransFunc.size(); i++)
         {
@@ -65,8 +68,103 @@ public:
             }
         }
 
+        //加Terminal
+        addTer();
+        
+        //myStatus是转换的关键
+
         //将我的状态映射将垃圾架构的映射改了
+        toStatus();
+
         //根据我的映射状态在去转换为垃圾表
+        toTransFunc();
+
+        //将我的结束状态转换为垃圾结束状态
+        toTerminal();
+
+        DFA* dfa = new DFA();
+        dfa->beginStatus = this->beginStatus;
+        dfa->numOfStatus = this->numOfStatus;
+        dfa->Status = this->Status;
+        dfa->transFunc = this->transFunc;
+        dfa->terminalStatus = this->terminalStatus;
+
+        return dfa;
+    }
+
+    void toTerminal(){
+        //清空原结束状态表
+        terminalStatus.clear();
+        for (int i = 0; i < myTer.size(); i++) {
+            //用我的结束状态表对照myStatus找位置存入
+            for (int j = 0; j < Status.size(); j++) {//状态位置
+                if(isSameSet(myTer[i], myStatus[j])){
+                    terminalStatus.push_back(j);
+                }
+            }
+            
+        }
+        
+    }
+
+    void toTransFunc(){
+        transFunc.clear();
+        //表先建起来
+        for (int i = 0; i < myTransFunc.size(); i++) {
+            transFunc.push_back(vector<FANode>());
+        }
+        
+        //修改数据
+        for (int i = 0; i < myTransFunc.size(); i++) {
+            //输入0
+            if(myTransFunc[i][0].size() == 0){
+                //空集合,说明不接受,直接跳过
+            } else {//接收
+                for (int j = 0; j < Status.size(); j++) {
+                    if(isSameSet(myTransFunc[i][0], myStatus[j])){
+                        transFunc[i].push_back(FANode(0, j));
+                    }
+                }
+                
+            }
+            //输入1
+            if(myTransFunc[i][1].size() != 0){
+                for (int j = 0; j < Status.size(); j++) {
+                    if(isSameSet(myTransFunc[i][1], myStatus[j])){
+                        transFunc[i].push_back(FANode(1, j));
+                    }
+                }
+            }
+        }
+        
+    }
+
+    bool isSameSet(set<int> s0, set<int> s1){
+        if(s0.size() != s1.size()){
+            return false;
+        } else {
+            set<int> temp;
+            set_symmetric_difference(s0.begin(), s0.end(), s1.begin(), s1.end(), inserter(temp, temp.begin()));
+            return temp.size() == 0;
+        }
+    }
+
+    void toStatus(){
+        for (int i = Status.size(); i < myStatus.size(); i++) {
+            //根据我的映射表将Status修改过来
+            Status.push_back(i);
+        }
+        
+    }
+
+    void addTer(){
+        for (int i = 0; i < myStatus.size(); i++) {
+            for (int j = 0; j < terminalStatus.size(); j++) {//如果包含原生结束状态,说明此状态是结束状态
+                if(myStatus[i].count(terminalStatus[j]) != 0){
+                    myTer.push_back(myStatus[i]);
+                }
+            }
+        }
     }
 */
     void formExtend(set<int> unit)
@@ -91,6 +189,7 @@ public:
         temp.push_back(set<int>());
         temp.push_back(set<int>());
         myTransFunc.push_back(temp);
+        numOfStatus++;
         //确定输出状态 --新状态实在原生状态的基础上合并得来的,所以各个元素肯定是原原生状态
         set<int> buffer0;
         set<int> buffer1;
