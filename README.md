@@ -67,3 +67,4 @@ $正则表达式\to \varepsilon-NFA\to NFA\to DFA\to 最小化DFA$
 ## 2021/12/12 by KarigenB
 * 感觉有一百几十年没写C++了,只能说还能根基尚在,还撑得住
 * 正经书上的转换方法,将状态合并
+* 
