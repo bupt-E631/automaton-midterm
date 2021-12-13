@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-12-05 12:19:57
- * @LastEditTime: 2021-12-12 15:48:53
- * @LastEditors: Karigen B
+ * @LastEditTime: 2021-12-13 02:20:27
+ * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \automaton-midterm\epsilon_NFA.h
  */
@@ -28,10 +28,10 @@ public:
     vector<vector<FANode>> transFunc;
     vector<int> terminalStatus;
     //Function:
-    epsilon_NFA() {};
-    NFA* toNFA()
+    epsilon_NFA(){};
+    NFA *toNFA()
     {
-        NFA* NFA_converted = new NFA();
+        NFA *NFA_converted = new NFA();
         NFA_converted->numOfStatus = this->numOfStatus;
         NFA_converted->terminalStatus = this->terminalStatus;
         NFA_converted->beginStatus = this->beginStatus;
@@ -81,7 +81,7 @@ public:
             while (it != S2.end())
             {
                 int tmpStatus = *it;
-                FANode e{ 0, tmpStatus };
+                FANode e{0, tmpStatus};
                 NFA_converted->transFunc[i].push_back(e);
                 it++;
             }
@@ -103,7 +103,7 @@ public:
             while (it != S3.end())
             {
                 int tmpStatus = *it;
-                FANode e{ 1, tmpStatus };
+                FANode e{1, tmpStatus};
                 NFA_converted->transFunc[i].push_back(e);
                 it++;
             }
@@ -197,13 +197,16 @@ public:
             cout << x << ' ';
         cout << endl;
         cout << "transfer Functions: " << endl;
-        for (int i = 0;i < this->numOfStatus;i++) {
+        for (int i = 0; i < this->numOfStatus; i++)
+        {
             cout << i << ": ";
-            if (this->transFunc[i].empty()) {
+            if (this->transFunc[i].empty())
+            {
                 cout << "no transfer function!";
                 continue;
             }
-            for (auto x : this->transFunc[i]) {
+            for (auto x : this->transFunc[i])
+            {
                 cout << '(' << x.input << ',' << x.output << ')' << ' ';
             }
             cout << endl;
