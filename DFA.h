@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-12-05 12:19:48
- * @LastEditTime: 2021-12-13 16:41:34
+ * @LastEditTime: 2021-12-13 17:28:48
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \automaton-midterm\DFA.h
@@ -48,6 +48,15 @@ public:
         }
         return false;
     }
+    int finalStatus(int status)
+    {
+        for (int i = 0; i < RelationStatusList.size(); i++)
+        {
+            if (RelationStatusList[i].count(status))
+                return i;
+        }
+        return -1;
+    }
     MinimizedDFA *toMinimizedDFA()
     {
         MinimizedDFA *converted = new MinimizedDFA();
@@ -58,6 +67,7 @@ public:
                 tmp.push_back(0);
             DistinguishableTable.push_back(tmp);
         }
+
         for (int i = 0; i < terminalStatus.size(); i++)
         {
             terminal.insert(terminalStatus[i]);
@@ -67,11 +77,13 @@ public:
             if (!terminal.count(Status[i]))
                 nonTerminalStatus.push_back(Status[i]);
         }
+
         for (int i = 0; i < terminalStatus.size(); i++) //初始化F×(Q-F)的可区分状态表
         {
             for (int j = 0; j < nonTerminalStatus.size(); j++)
-                DistinguishableTable[i][j] = DistinguishableTable[j][i] = 1;
+                DistinguishableTable[terminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][terminalStatus[i]] = 1;
         }
+
         for (int i = 0; i < terminalStatus.size(); i++) //F×F 递归标记
         {
             for (int j = 0; j < terminalStatus.size(); j++)
@@ -86,10 +98,10 @@ public:
                 if (DistinguishableTable[output1][output2] || DistinguishableTable[output3][output4])
                 {
                     //(q,a)(p,a)已被标记
-                    DistinguishableTable[i][j] = DistinguishableTable[j][i] = 1;
+                    DistinguishableTable[terminalStatus[i]][terminalStatus[j]] = DistinguishableTable[terminalStatus[j]][terminalStatus[i]] = 1;
                     for (int k = 0; k < RelationList.size(); k++)
                     {
-                        if (RelationList[k].count(make_pair(i, j)) || RelationList[k].count(make_pair(j, i)))
+                        if (RelationList[k].count(make_pair(terminalStatus[i], terminalStatus[j])) || RelationList[k].count(make_pair(terminalStatus[j], terminalStatus[i])))
                         {
                             set<pair<int, int>>::iterator it = RelationList[k].begin();
                             while (it != RelationList[k].end())
@@ -110,14 +122,14 @@ public:
                         {
                             if (RelationList[k].count(make_pair(output1, output2)) || RelationList[k].count(make_pair(output2, output1)))
                             {
-                                RelationList[k].insert(make_pair(i, j));
+                                RelationList[k].insert(make_pair(terminalStatus[i], terminalStatus[j]));
                                 flag = false;
                             }
                         }
                         if (flag)
                         {
                             set<pair<int, int>> tmp;
-                            tmp.insert(make_pair(i, j));
+                            tmp.insert(make_pair(terminalStatus[i], terminalStatus[j]));
                             tmp.insert(make_pair(output1, output2));
                             RelationList.push_back(tmp);
                         }
@@ -129,14 +141,14 @@ public:
                         {
                             if (RelationList[k].count(make_pair(output3, output4)) || RelationList[k].count(make_pair(output4, output3)))
                             {
-                                RelationList[k].insert(make_pair(i, j));
+                                RelationList[k].insert(make_pair(terminalStatus[i], terminalStatus[j]));
                                 flag = false;
                             }
                         }
                         if (flag)
                         {
                             set<pair<int, int>> tmp;
-                            tmp.insert(make_pair(i, j));
+                            tmp.insert(make_pair(terminalStatus[i], terminalStatus[j]));
                             tmp.insert(make_pair(output3, output4));
                             RelationList.push_back(tmp);
                         }
@@ -157,10 +169,10 @@ public:
                 if (DistinguishableTable[output1][output2] || DistinguishableTable[output3][output4])
                 {
                     //(q,a)(p,a)已被标记
-                    DistinguishableTable[i][j] = DistinguishableTable[j][i] = 1;
+                    DistinguishableTable[nonTerminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][nonTerminalStatus[i]] = 1;
                     for (int k = 0; k < RelationList.size(); k++)
                     {
-                        if (RelationList[k].count(make_pair(i, j)) || RelationList[k].count(make_pair(j, i)))
+                        if (RelationList[k].count(make_pair(nonTerminalStatus[i], nonTerminalStatus[j])) || RelationList[k].count(make_pair(nonTerminalStatus[j], nonTerminalStatus[i])))
                         {
                             set<pair<int, int>>::iterator it = RelationList[k].begin();
                             while (it != RelationList[k].end())
@@ -181,14 +193,14 @@ public:
                         {
                             if (RelationList[k].count(make_pair(output1, output2)) || RelationList[k].count(make_pair(output2, output1)))
                             {
-                                RelationList[k].insert(make_pair(i, j));
+                                RelationList[k].insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
                                 flag = false;
                             }
                         }
                         if (flag)
                         {
                             set<pair<int, int>> tmp;
-                            tmp.insert(make_pair(i, j));
+                            tmp.insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
                             tmp.insert(make_pair(output1, output2));
                             RelationList.push_back(tmp);
                         }
@@ -200,14 +212,14 @@ public:
                         {
                             if (RelationList[k].count(make_pair(output3, output4)) || RelationList[k].count(make_pair(output4, output3)))
                             {
-                                RelationList[k].insert(make_pair(i, j));
+                                RelationList[k].insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
                                 flag = false;
                             }
                         }
                         if (flag)
                         {
                             set<pair<int, int>> tmp;
-                            tmp.insert(make_pair(i, j));
+                            tmp.insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
                             tmp.insert(make_pair(output3, output4));
                             RelationList.push_back(tmp);
                         }
@@ -215,24 +227,36 @@ public:
                 }
             }
         }
-        for (int i = 0; i < RelationList.size(); i++)
-        {
-            set<pair<int, int>>::iterator it = RelationList[i].begin();
-            set<int> S;
-            while (it != RelationList[i].end())
-            {
-                pair<int, int> tmp = *it;
-                int first = tmp.first;
-                int second = tmp.second;
-                if (!S.count(first))
-                    S.insert(first);
-                if (!S.count(second))
-                    S.insert(second);
 
-                it++;
+        for (int i = 0; i < DistinguishableTable.size(); i++)
+        {
+            for (int j = 0; j < DistinguishableTable.size(); j++)
+            {
+                if (DistinguishableTable[i][j])
+                    continue;
+                else
+                {
+                    bool flag = true;
+                    for (int k = 0; k < RelationStatusList.size(); k++)
+                    {
+                        if (RelationStatusList[k].count(i) || RelationStatusList[k].count(j))
+                        {
+                            RelationStatusList[k].insert(i);
+                            RelationStatusList[k].insert(j);
+                            flag = false;
+                        }
+                    }
+                    if (flag)
+                    {
+                        set<int> tmp;
+                        tmp.insert(i);
+                        tmp.insert(j);
+                        RelationStatusList.push_back(tmp);
+                    }
+                }
             }
-            RelationStatusList.push_back(S);
         }
+
         set<int> StatusLeaved;
         for (int i = 0; i < Status.size(); i++)
             StatusLeaved.insert(Status[i]);
@@ -294,22 +318,52 @@ public:
                 if (outputwith(0, tmp2) != -1 && !flag1)
                 {
                     flag1 = true;
-                    FANode tmp3{tmp2, outputwith(0, tmp2)};
+                    FANode tmp3{0, finalStatus(outputwith(0, tmp2))};
                     tmp1.push_back(tmp3);
                 }
                 if (outputwith(1, tmp2) != -1 && !flag2)
                 {
                     flag2 = true;
-                    FANode tmp3{tmp2, outputwith(1, tmp2)};
+                    FANode tmp3{1, finalStatus(outputwith(1, tmp2))};
                     tmp1.push_back(tmp3);
                 }
                 it++;
             }
             converted->transFunc.push_back(tmp1);
         }
+        for (int i = 0; i < converted->numOfStatus; i++)
+        {
+
+            converted->Status.push_back(i);
+        }
+        mydisplay();
         return converted;
     }
+    void mydisplay()
+    {
+        cout << endl;
 
+        for (int i = 0; i < RelationList.size(); i++)
+        {
+            set<pair<int, int>>::iterator it = RelationList[i].begin();
+            while (it != RelationList[i].end())
+            {
+                cout << "(" << it->first << " " << it->second << ") ";
+                it++;
+            }
+            cout << endl;
+        }
+        for (int i = 0; i < RelationStatusList.size(); i++)
+        {
+            set<int>::iterator it = RelationStatusList[i].begin();
+            while (it != RelationStatusList[i].end())
+            {
+                cout << *it << " ";
+                it++;
+            }
+            cout << endl;
+        }
+    }
     void display()
     {
         cout << "numOfStatus: " << this->numOfStatus << endl;

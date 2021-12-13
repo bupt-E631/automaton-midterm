@@ -54,11 +54,11 @@ public:
     };
     //Function:
 
+
     
     DFA* toDFA(bool isThis){
         transFuncConvert();//垃圾架构转换为我的架构
         statusMapping();//垃圾架构状态向量转换为我的向量
-
         //根据我的表去做转换
         for (int i = 0; i < myTransFunc.size(); i++)
         {
@@ -166,7 +166,7 @@ public:
             }
         }
     }
-
+*/
     void formExtend(set<int> unit)
     {
         //先判断这个状态是否为空
