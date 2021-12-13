@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-12-05 12:19:48
- * @LastEditTime: 2021-12-13 16:02:41
+ * @LastEditTime: 2021-12-13 16:41:34
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \automaton-midterm\DFA.h
@@ -29,7 +29,25 @@ public:
     vector<set<int>> RelationStatusList;      //关联状态表
     set<int> terminal;                        //结束状态集合
     vector<int> nonTerminalStatus;            //非结束状态集合
-    //Function
+                                              //Function
+    int outputwith(int in, int posi)
+    {
+        for (int i = 0; i < transFunc[posi].size(); i++)
+        {
+            if (transFunc[posi][i].input == in)
+                return transFunc[posi][i].output;
+        }
+        return -1;
+    }
+    bool interminal(int status)
+    {
+        for (int i = 0; i < terminalStatus.size(); i++)
+        {
+            if (status == terminalStatus[i])
+                return true;
+        }
+        return false;
+    }
     MinimizedDFA *toMinimizedDFA()
     {
         MinimizedDFA *converted = new MinimizedDFA();
@@ -46,7 +64,7 @@ public:
         }
         for (int i = 0; i < Status.size(); i++) //构造非终结状态表
         {
-            if (!terminal.find(Status[i]))
+            if (!terminal.count(Status[i]))
                 nonTerminalStatus.push_back(Status[i]);
         }
         for (int i = 0; i < terminalStatus.size(); i++) //初始化F×(Q-F)的可区分状态表
@@ -71,9 +89,9 @@ public:
                     DistinguishableTable[i][j] = DistinguishableTable[j][i] = 1;
                     for (int k = 0; k < RelationList.size(); k++)
                     {
-                        if (RelationList[k].find(make_pair(i, j)) || RelationList[k].find(make_pair(j, i)))
+                        if (RelationList[k].count(make_pair(i, j)) || RelationList[k].count(make_pair(j, i)))
                         {
-                            set<pair>::iterator it = RelationList[k].begin;
+                            set<pair<int, int>>::iterator it = RelationList[k].begin();
                             while (it != RelationList[k].end())
                             {
                                 pair<int, int> tmp = *it;
@@ -90,7 +108,7 @@ public:
                         bool flag = true;
                         for (int k = 0; k < RelationList.size(); k++)
                         {
-                            if (RelationList[k].find(make_pair(output1, output2)) || RelationList[k].find(make_pair(output2, output1)))
+                            if (RelationList[k].count(make_pair(output1, output2)) || RelationList[k].count(make_pair(output2, output1)))
                             {
                                 RelationList[k].insert(make_pair(i, j));
                                 flag = false;
@@ -109,7 +127,7 @@ public:
                         bool flag = true;
                         for (int k = 0; k < RelationList.size(); k++)
                         {
-                            if (RelationList[k].find(make_pair(output3, output4)) || RelationList[k].find(make_pair(output4, output3))
+                            if (RelationList[k].count(make_pair(output3, output4)) || RelationList[k].count(make_pair(output4, output3)))
                             {
                                 RelationList[k].insert(make_pair(i, j));
                                 flag = false;
@@ -142,9 +160,9 @@ public:
                     DistinguishableTable[i][j] = DistinguishableTable[j][i] = 1;
                     for (int k = 0; k < RelationList.size(); k++)
                     {
-                        if (RelationList[k].find(make_pair(i, j)) || RelationList[k].find(make_pair(j, i)))
+                        if (RelationList[k].count(make_pair(i, j)) || RelationList[k].count(make_pair(j, i)))
                         {
-                            set<pair>::iterator it = RelationList[k].begin;
+                            set<pair<int, int>>::iterator it = RelationList[k].begin();
                             while (it != RelationList[k].end())
                             {
                                 pair<int, int> tmp = *it;
@@ -161,7 +179,7 @@ public:
                         bool flag = true;
                         for (int k = 0; k < RelationList.size(); k++)
                         {
-                            if (RelationList[k].find(make_pair(output1, output2)) || RelationList[k].find(make_pair(output2, output1)))
+                            if (RelationList[k].count(make_pair(output1, output2)) || RelationList[k].count(make_pair(output2, output1)))
                             {
                                 RelationList[k].insert(make_pair(i, j));
                                 flag = false;
@@ -180,7 +198,7 @@ public:
                         bool flag = true;
                         for (int k = 0; k < RelationList.size(); k++)
                         {
-                            if (RelationList[k].find(make_pair(output3, output4)) || RelationList[k].find(make_pair(output4, output3))
+                            if (RelationList[k].count(make_pair(output3, output4)) || RelationList[k].count(make_pair(output4, output3)))
                             {
                                 RelationList[k].insert(make_pair(i, j));
                                 flag = false;
@@ -199,16 +217,16 @@ public:
         }
         for (int i = 0; i < RelationList.size(); i++)
         {
-            set<int, int>::iterator it = RelationList[i].begin();
+            set<pair<int, int>>::iterator it = RelationList[i].begin();
             set<int> S;
             while (it != RelationList[i].end())
             {
                 pair<int, int> tmp = *it;
                 int first = tmp.first;
                 int second = tmp.second;
-                if (!S.find(first))
+                if (!S.count(first))
                     S.insert(first);
-                if (!S.find(second))
+                if (!S.count(second))
                     S.insert(second);
 
                 it++;
@@ -231,10 +249,67 @@ public:
         RelationStatusList.push_back(StatusLeaved); //状态分类完成
         vector<vector<FANode>> newTransFunc;
         //开始正式转化
-        converted->numOfStatus = RelationStatusList.size();
-
+        converted->numOfStatus = RelationStatusList.size(); //状态数
+        for (int i = 0; i < RelationStatusList.size(); i++)
+        { //结束状态
+            set<int>::iterator it = RelationStatusList[i].begin();
+            while (it != RelationStatusList[i].end())
+            {
+                int tmp = *it;
+                if (interminal(tmp))
+                {
+                    converted->terminalStatus.push_back(i);
+                    break;
+                }
+                it++;
+            }
+        }
+        for (int i = 0; i < RelationStatusList.size(); i++)
+        { //开始状态
+            bool flag = false;
+            set<int>::iterator it = RelationStatusList[i].begin();
+            while (it != RelationStatusList[i].end())
+            {
+                int tmp = *it;
+                if (tmp == this->beginStatus)
+                {
+                    converted->beginStatus = i;
+                    flag = true;
+                    break;
+                }
+                it++;
+            }
+            if (flag)
+                break;
+        }
+        //transfunc
+        for (int i = 0; i < converted->numOfStatus; i++)
+        {
+            vector<FANode> tmp1;
+            bool flag1 = false, flag2 = false;
+            set<int>::iterator it = RelationStatusList[i].begin();
+            while (it != RelationStatusList[i].end())
+            {
+                int tmp2 = *it;
+                if (outputwith(0, tmp2) != -1 && !flag1)
+                {
+                    flag1 = true;
+                    FANode tmp3{tmp2, outputwith(0, tmp2)};
+                    tmp1.push_back(tmp3);
+                }
+                if (outputwith(1, tmp2) != -1 && !flag2)
+                {
+                    flag2 = true;
+                    FANode tmp3{tmp2, outputwith(1, tmp2)};
+                    tmp1.push_back(tmp3);
+                }
+                it++;
+            }
+            converted->transFunc.push_back(tmp1);
+        }
         return converted;
     }
+
     void display()
     {
         cout << "numOfStatus: " << this->numOfStatus << endl;
@@ -263,13 +338,5 @@ public:
             cout << endl;
         }
         cout << endl;
-    }
-    int outputwith(int in, int posi)
-    {
-        for (int i = 0; i < transFunc[posi].size(); i++)
-        {
-            if (transFunc[posi][i].input == in)
-                return transFunc[posi][i].output;
-        }
     }
 };
