@@ -193,25 +193,6 @@ public:
                             }
                         }
                     }
-                    /* else
-                    {
-                        bool flag = true;
-                        for (int k = 0; k < RelationList.size(); k++)
-                        {
-                            if (RelationList[k].count(make_pair(output1, output2)) || RelationList[k].count(make_pair(output2, output1)))
-                            {
-                                RelationList[k].insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
-                                flag = false;
-                            }
-                        }
-                        if (flag)
-                        {
-                            set<pair<int, int>> tmp;
-                            tmp.insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
-                            tmp.insert(make_pair(output1, output2));
-                            RelationList.push_back(tmp);
-                        }
-                    }*/
                 }
                 if (output3 != -1 && output4 != -1)
                 {
@@ -235,25 +216,6 @@ public:
                             }
                         }
                     }
-                    /* else
-                    {
-                        bool flag = true;
-                        for (int k = 0; k < RelationList.size(); k++)
-                        {
-                            if (RelationList[k].count(make_pair(output3, output4)) || RelationList[k].count(make_pair(output4, output3)))
-                            {
-                                RelationList[k].insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
-                                flag = false;
-                            }
-                        }
-                        if (flag)
-                        {
-                            set<pair<int, int>> tmp;
-                            tmp.insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
-                            tmp.insert(make_pair(output3, output4));
-                            RelationList.push_back(tmp);
-                        }
-                    }*/
                 }
                 if (flag1 && flag2)
                 {
@@ -334,11 +296,19 @@ public:
                                     while (it != RelationList[k].end())
                                     {
                                         pair<int, int> tmp1 = *it;
-                                        DistinguishableTable[tmp1.first][tmp1.second] = DistinguishableTable[tmp1.second][tmp1.first] = 1;
-                                        Q.push(tmp1);
+                                        if (tmp1.first == -1 || tmp1.second == -1)
+                                        {
+                                            it++;
+                                            RelationList[k].erase(tmp1);
+                                        }
+                                        else
+                                        {
+                                            DistinguishableTable[tmp1.first][tmp1.second] = DistinguishableTable[tmp1.second][tmp1.first] = 1;
+                                            Q.push(tmp1);
 
-                                        it++;
-                                        RelationList[k].erase(tmp1);
+                                            it++;
+                                            RelationList[k].erase(tmp1);
+                                        }
                                     }
                                 }
                                 if (RelationList[k].count(ttmp))
@@ -348,35 +318,24 @@ public:
                                     while (it != RelationList[k].end())
                                     {
                                         pair<int, int> tmp1 = *it;
-                                        DistinguishableTable[tmp1.first][tmp1.second] = DistinguishableTable[tmp1.second][tmp1.first] = 1;
-                                        Q.push(tmp1);
+                                        if (tmp1.first == -1 || tmp1.second == -1)
+                                        {
+                                            it++;
+                                            RelationList[k].erase(tmp1);
+                                        }
+                                        else
+                                        {
+                                            DistinguishableTable[tmp1.first][tmp1.second] = DistinguishableTable[tmp1.second][tmp1.first] = 1;
+                                            Q.push(tmp1);
 
-                                        it++;
-                                        RelationList[k].erase(tmp1);
+                                            it++;
+                                            RelationList[k].erase(tmp1);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                    /*else
-                    {
-                        bool flag = true;
-                        for (int k = 0; k < RelationList.size(); k++)
-                        {
-                            if (RelationList[k].count(make_pair(output1, output2)) || RelationList[k].count(make_pair(output2, output1)))
-                            {
-                                RelationList[k].insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
-                                flag = false;
-                            }
-                        }
-                        if (flag)
-                        {
-                            set<pair<int, int>> tmp;
-                            tmp.insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
-                            tmp.insert(make_pair(output1, output2));
-                            RelationList.push_back(tmp);
-                        }
-                    }*/
                 }
                 if (output3 != -1 && output4 != -1)
                 {
@@ -402,11 +361,19 @@ public:
                                     while (it != RelationList[k].end())
                                     {
                                         pair<int, int> tmp1 = *it;
-                                        DistinguishableTable[tmp1.first][tmp1.second] = DistinguishableTable[tmp1.second][tmp1.first] = 1;
-                                        Q.push(tmp1);
+                                        if (tmp1.first == -1 || tmp1.second == -1)
+                                        {
+                                            it++;
+                                            RelationList[k].erase(tmp1);
+                                        }
+                                        else
+                                        {
+                                            DistinguishableTable[tmp1.first][tmp1.second] = DistinguishableTable[tmp1.second][tmp1.first] = 1;
+                                            Q.push(tmp1);
 
-                                        it++;
-                                        RelationList[k].erase(tmp1);
+                                            it++;
+                                            RelationList[k].erase(tmp1);
+                                        }
                                     }
                                 }
                                 if (RelationList[k].count(ttmp))
@@ -416,35 +383,24 @@ public:
                                     while (it != RelationList[k].end())
                                     {
                                         pair<int, int> tmp1 = *it;
-                                        DistinguishableTable[tmp1.first][tmp1.second] = DistinguishableTable[tmp1.second][tmp1.first] = 1;
-                                        Q.push(tmp1);
+                                        if (tmp1.first == -1 || tmp1.second == -1)
+                                        {
+                                            it++;
+                                            RelationList[k].erase(tmp1);
+                                        }
+                                        else
+                                        {
+                                            DistinguishableTable[tmp1.first][tmp1.second] = DistinguishableTable[tmp1.second][tmp1.first] = 1;
+                                            Q.push(tmp1);
 
-                                        it++;
-                                        RelationList[k].erase(tmp1);
+                                            it++;
+                                            RelationList[k].erase(tmp1);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                    /* else
-                    {
-                        bool flag = true;
-                        for (int k = 0; k < RelationList.size(); k++)
-                        {
-                            if (RelationList[k].count(make_pair(output3, output4)) || RelationList[k].count(make_pair(output4, output3)))
-                            {
-                                RelationList[k].insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
-                                flag = false;
-                            }
-                        }
-                        if (flag)
-                        {
-                            set<pair<int, int>> tmp;
-                            tmp.insert(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
-                            tmp.insert(make_pair(output3, output4));
-                            RelationList.push_back(tmp);
-                        }
-                    }*/
                 }
                 if (flag1 && flag2)
                 {
