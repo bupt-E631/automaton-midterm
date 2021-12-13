@@ -51,7 +51,7 @@ public:
 
     };
     //Function:
-
+    /*
     NFA *toDFA(bool isThis)
     {
         transFuncConvert(); //垃圾架构转换为我的架构
@@ -68,7 +68,7 @@ public:
         //将我的状态映射将垃圾架构的映射改了
         //根据我的映射状态在去转换为垃圾表
     }
-
+*/
     void formExtend(set<int> unit)
     {
         //先判断这个状态是否为空
