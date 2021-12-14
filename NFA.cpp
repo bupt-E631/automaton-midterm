@@ -4,9 +4,9 @@ NFA::NFA() = default;
 
 DFA* NFA::toDFA(bool isThis)
 {
-    transFuncConvert(); //À¬»ø¼Ü¹¹×ª»»ÎªÎÒµÄ¼Ü¹¹
-    statusMapping();    //À¬»ø¼Ü¹¹×´Ì¬ÏòÁ¿×ª»»ÎªÎÒµÄÏòÁ¿
-    //¸ù¾İÎÒµÄ±íÈ¥×ö×ª»»
+    transFuncConvert(); //åƒåœ¾æ¶æ„è½¬æ¢ä¸ºæˆ‘çš„æ¶æ„
+    statusMapping();    //åƒåœ¾æ¶æ„çŠ¶æ€å‘é‡è½¬æ¢ä¸ºæˆ‘çš„å‘é‡
+    //æ ¹æ®æˆ‘çš„è¡¨å»åšè½¬æ¢
     for (int i = 0; i < myTransFunc.size(); i++)
     {
         for (int j = 0; j < myTransFunc[i].size(); j++)
@@ -15,18 +15,18 @@ DFA* NFA::toDFA(bool isThis)
         }
     }
 
-    //¼ÓTerminal
+    //åŠ Terminal
     addTer();
 
-    //myStatusÊÇ×ª»»µÄ¹Ø¼ü
+    //myStatusæ˜¯è½¬æ¢çš„å…³é”®
 
-    //½«ÎÒµÄ×´Ì¬Ó³Éä½«À¬»ø¼Ü¹¹µÄÓ³Éä¸ÄÁË
+    //å°†æˆ‘çš„çŠ¶æ€æ˜ å°„å°†åƒåœ¾æ¶æ„çš„æ˜ å°„æ”¹äº†
     toStatus();
 
-    //¸ù¾İÎÒµÄÓ³Éä×´Ì¬ÔÚÈ¥×ª»»ÎªÀ¬»ø±í
+    //æ ¹æ®æˆ‘çš„æ˜ å°„çŠ¶æ€åœ¨å»è½¬æ¢ä¸ºåƒåœ¾è¡¨
     toTransFunc();
 
-    //½«ÎÒµÄ½áÊø×´Ì¬×ª»»ÎªÀ¬»ø½áÊø×´Ì¬
+    //å°†æˆ‘çš„ç»“æŸçŠ¶æ€è½¬æ¢ä¸ºåƒåœ¾ç»“æŸçŠ¶æ€
     toTerminal();
 
     DFA* dfa = new DFA();
@@ -41,13 +41,13 @@ DFA* NFA::toDFA(bool isThis)
 
 void NFA::toTerminal()
 {
-    //Çå¿ÕÔ­½áÊø×´Ì¬±í
+    //æ¸…ç©ºåŸç»“æŸçŠ¶æ€è¡¨
     terminalStatus.clear();
     for (int i = 0; i < myTer.size(); i++)
     {
-        //ÓÃÎÒµÄ½áÊø×´Ì¬±í¶ÔÕÕmyStatusÕÒÎ»ÖÃ´æÈë
+        //ç”¨æˆ‘çš„ç»“æŸçŠ¶æ€è¡¨å¯¹ç…§myStatusæ‰¾ä½ç½®å­˜å…¥
         for (int j = 0; j < Status.size(); j++)
-        { //×´Ì¬Î»ÖÃ
+        { //çŠ¶æ€ä½ç½®
             if (isSameSet(myTer[i], myStatus[j]))
             {
                 terminalStatus.push_back(j);
@@ -59,22 +59,22 @@ void NFA::toTerminal()
 void NFA::toTransFunc()
 {
     transFunc.clear();
-    //±íÏÈ½¨ÆğÀ´
+    //è¡¨å…ˆå»ºèµ·æ¥
     for (int i = 0; i < myTransFunc.size(); i++)
     {
         transFunc.push_back(vector<FANode>());
     }
 
-    //ĞŞ¸ÄÊı¾İ
+    //ä¿®æ”¹æ•°æ®
     for (int i = 0; i < myTransFunc.size(); i++)
     {
-        //ÊäÈë0
+        //è¾“å…¥0
         if (myTransFunc[i][0].size() == 0)
         {
-            //¿Õ¼¯ºÏ,ËµÃ÷²»½ÓÊÜ,Ö±½ÓÌø¹ı
+            //ç©ºé›†åˆ,è¯´æ˜ä¸æ¥å—,ç›´æ¥è·³è¿‡
         }
         else
-        { //½ÓÊÕ
+        { //æ¥æ”¶
             for (int j = 0; j < Status.size(); j++)
             {
                 if (isSameSet(myTransFunc[i][0], myStatus[j]))
@@ -83,7 +83,7 @@ void NFA::toTransFunc()
                 }
             }
         }
-        //ÊäÈë1
+        //è¾“å…¥1
         if (myTransFunc[i][1].size() != 0)
         {
             for (int j = 0; j < Status.size(); j++)
@@ -115,7 +115,7 @@ void NFA::toStatus()
 {
     for (int i = Status.size(); i < myStatus.size(); i++)
     {
-        //¸ù¾İÎÒµÄÓ³Éä±í½«StatusĞŞ¸Ä¹ıÀ´
+        //æ ¹æ®æˆ‘çš„æ˜ å°„è¡¨å°†Statusä¿®æ”¹è¿‡æ¥
         Status.push_back(i);
     }
 }
@@ -125,7 +125,7 @@ void NFA::addTer()
     for (int i = 0; i < myStatus.size(); i++)
     {
         for (int j = 0; j < terminalStatus.size(); j++)
-        { //Èç¹û°üº¬Ô­Éú½áÊø×´Ì¬,ËµÃ÷´Ë×´Ì¬ÊÇ½áÊø×´Ì¬
+        { //å¦‚æœåŒ…å«åŸç”Ÿç»“æŸçŠ¶æ€,è¯´æ˜æ­¤çŠ¶æ€æ˜¯ç»“æŸçŠ¶æ€
             if (myStatus[i].count(terminalStatus[j]) != 0)
             {
                 myTer.push_back(myStatus[i]);
@@ -136,46 +136,46 @@ void NFA::addTer()
 
 void NFA::formExtend(set<int> unit)
 {
-    //ÏÈÅĞ¶ÏÕâ¸ö×´Ì¬ÊÇ·ñÎª¿Õ
+    //å…ˆåˆ¤æ–­è¿™ä¸ªçŠ¶æ€æ˜¯å¦ä¸ºç©º
     if (unit.size() == 0)
     {
         return;
     }
 
-    //ÅĞ¶Ï¸Ã×´Ì¬ÊÇ·ñ°üº¬ÓÚ×´Ì¬±í
+    //åˆ¤æ–­è¯¥çŠ¶æ€æ˜¯å¦åŒ…å«äºçŠ¶æ€è¡¨
     if (exist(unit))
     {
         return;
     }
 
-    // ¸Ã¼¯ºÏ²»°üº¬ÓÚ×´Ì¬±í,ÊÇĞÂ¼¯ºÏ
-    //¼ÓÈë×´Ì¬±í
+    // è¯¥é›†åˆä¸åŒ…å«äºçŠ¶æ€è¡¨,æ˜¯æ–°é›†åˆ
+    //åŠ å…¥çŠ¶æ€è¡¨
     myStatus.push_back(unit);
-    //±íÖĞ´´½¨ĞÂÁĞ --×îºóÒ»ĞĞ´æ·ÅĞÂ×´Ì¬
+    //è¡¨ä¸­åˆ›å»ºæ–°åˆ— --æœ€åä¸€è¡Œå­˜æ”¾æ–°çŠ¶æ€
     vector<set<int>> temp;
     temp.push_back(set<int>());
     temp.push_back(set<int>());
     myTransFunc.push_back(temp);
     numOfStatus++;
-    //È·¶¨Êä³ö×´Ì¬ --ĞÂ×´Ì¬ÊµÔÚÔ­Éú×´Ì¬µÄ»ù´¡ÉÏºÏ²¢µÃÀ´µÄ,ËùÒÔ¸÷¸öÔªËØ¿Ï¶¨ÊÇÔ­Ô­Éú×´Ì¬
+    //ç¡®å®šè¾“å‡ºçŠ¶æ€ --æ–°çŠ¶æ€å®åœ¨åŸç”ŸçŠ¶æ€çš„åŸºç¡€ä¸Šåˆå¹¶å¾—æ¥çš„,æ‰€ä»¥å„ä¸ªå…ƒç´ è‚¯å®šæ˜¯åŸåŸç”ŸçŠ¶æ€
     set<int> buffer0;
     set<int> buffer1;
     for (set<int>::iterator iter = unit.begin(); iter != unit.end(); iter++)
     {
-        //ÊäÈë0
+        //è¾“å…¥0
         set<int> temp0;
-        //myTransFunc[*iter][0]; --Îª¶ÔÓ¦¼¯ºÏ
+        //myTransFunc[*iter][0]; --ä¸ºå¯¹åº”é›†åˆ
         set_union(myTransFunc[*iter][0].begin(), myTransFunc[*iter][0].end(), buffer0.begin(), buffer0.end(), inserter(temp0, temp0.begin()));
         buffer0.clear();
         buffer0 = temp0;
-        //ÊäÈë1
+        //è¾“å…¥1
         set<int> temp1;
         //myTransFunc[*iter][1];
         set_union(myTransFunc[*iter][1].begin(), myTransFunc[*iter][1].end(), buffer1.begin(), buffer1.end(), inserter(temp1, temp1.begin()));
         buffer1.clear();
         buffer1 = temp1;
     }
-    //·ÅÈë¶ÔÓ¦ĞĞ
+    //æ”¾å…¥å¯¹åº”è¡Œ
     myTransFunc[myTransFunc.size() - 1][0] = buffer0;
     myTransFunc[myTransFunc.size() - 1][1] = buffer1;
 }
@@ -184,7 +184,7 @@ void NFA::myDisplay()
 {
     for (int i = 0; i < myStatus.size(); i++)
     {
-        //Êä±íÍ·
+        //è¾“è¡¨å¤´
         for (set<int>::iterator iter = myStatus[i].begin(); iter != myStatus[i].end(); iter++)
         {
             cout << *iter;
@@ -208,12 +208,12 @@ bool NFA::exist(set<int> unit)
     for (int i = 0; i < myStatus.size(); i++)
     {
         if (unit.size() != myStatus[i].size())
-        { //´óĞ¡²»Í¬¿Ï¶¨²»ÊÇÒ»¸ö×´Ì¬
+        { //å¤§å°ä¸åŒè‚¯å®šä¸æ˜¯ä¸€ä¸ªçŠ¶æ€
             continue;
         }
         else
-        { // ¼¯ºÏ¸öÊıÏàµÈµÄÇé¿öÏÂÅĞ¶ÏÊÇ·ñÊÇÍ¬Ò»¸ö¼¯ºÏ
-            //¸ù¾İ¶Ô³Æ²î¼¯ÊÇ·ñÎª¿ÕÅĞ¶Ï¼¯ºÏÊÇ·ñÏàµÈ
+        { // é›†åˆä¸ªæ•°ç›¸ç­‰çš„æƒ…å†µä¸‹åˆ¤æ–­æ˜¯å¦æ˜¯åŒä¸€ä¸ªé›†åˆ
+            //æ ¹æ®å¯¹ç§°å·®é›†æ˜¯å¦ä¸ºç©ºåˆ¤æ–­é›†åˆæ˜¯å¦ç›¸ç­‰
             set<int> temp;
             set_symmetric_difference(unit.begin(), unit.end(), myStatus[i].begin(), myStatus[i].end(), inserter(temp, temp.begin()));
             if (temp.size() == 0)
@@ -238,7 +238,7 @@ void NFA::statusMapping()
 
 void NFA::transFuncConvert()
 {
-    //1.ÏÈ¹¹½¨¿Õ±í
+    //1.å…ˆæ„å»ºç©ºè¡¨
     vector<set<int>> temp;
     temp.push_back(set<int>());
     temp.push_back(set<int>());
@@ -246,18 +246,18 @@ void NFA::transFuncConvert()
     {
         myTransFunc.push_back(temp);
     }
-    //2.½«Êı¾İ·ÅÈë¿Õ±í
+    //2.å°†æ•°æ®æ”¾å…¥ç©ºè¡¨
     for (int i = 0; i < transFunc.size(); i++)
     {
         for (int j = 0; j < transFunc[i].size(); j++)
         {
             if (transFunc[i][j].input == 0)
             {
-                myTransFunc[i][0].insert(transFunc[i][j].output); //½«ÊäÈë1×ª»»¹ıÈ¥µÄ×´Ì¬·ÅÈë¶ÔÓ¦Î»ÖÃ
+                myTransFunc[i][0].insert(transFunc[i][j].output); //å°†è¾“å…¥1è½¬æ¢è¿‡å»çš„çŠ¶æ€æ”¾å…¥å¯¹åº”ä½ç½®
             }
             else if (transFunc[i][j].input == 1)
             {
-                myTransFunc[i][1].insert(transFunc[i][j].output); //½«ÊäÈë1×ª»»¹ıÈ¥µÄ×´Ì¬·ÅÈë¶ÔÓ¦Î»ÖÃ
+                myTransFunc[i][1].insert(transFunc[i][j].output); //å°†è¾“å…¥1è½¬æ¢è¿‡å»çš„çŠ¶æ€æ”¾å…¥å¯¹åº”ä½ç½®
             }
         }
     }
