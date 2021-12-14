@@ -1,4 +1,4 @@
-#include"DFA.h"
+#include "DFA.h"
 
 DFA::DFA() = default;
 
@@ -99,12 +99,12 @@ void DFA::removeUnrelatedStatus()
     terminalStatus = newterminal;
 }
 
-MinimizedDFA* DFA::toMinimizedDFA()
+MinimizedDFA *DFA::toMinimizedDFA()
 {
-    MinimizedDFA* converted = new MinimizedDFA();
+    MinimizedDFA *converted = new MinimizedDFA();
     removeUnrelatedStatus();
     display();
-    for (int i = 0; i < numOfStatus; i++) //³õÊ¼»¯Çø·Ö±í
+    for (int i = 0; i < numOfStatus; i++) //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
     {
         vector<int> tmp;
         for (int j = 0; j < numOfStatus; j++)
@@ -116,18 +116,18 @@ MinimizedDFA* DFA::toMinimizedDFA()
     {
         terminal.insert(terminalStatus[i]);
     }
-    for (int i = 0; i < Status.size(); i++) //¹¹Ôì·ÇÖÕ½á×´Ì¬±í
+    for (int i = 0; i < Status.size(); i++) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ½ï¿½×´Ì¬ï¿½ï¿½
     {
         if (!terminal.count(Status[i]))
             nonTerminalStatus.push_back(Status[i]);
     }
 
-    for (int i = 0; i < terminalStatus.size(); i++) //³õÊ¼»¯F¡Á(Q-F)µÄ¿ÉÇø·Ö×´Ì¬±í
+    for (int i = 0; i < terminalStatus.size(); i++) //ï¿½ï¿½Ê¼ï¿½ï¿½Fï¿½ï¿½(Q-F)ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½
     {
         for (int j = 0; j < nonTerminalStatus.size(); j++)
             DistinguishableTable[terminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][terminalStatus[i]] = 1;
     }
-    for (int i = 0; i < Status.size(); i++) //´¦ÀíÏÝÚå×´Ì¬£¬Ò²±ê¼Ç
+    for (int i = 0; i < Status.size(); i++) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½Ò²ï¿½ï¿½ï¿½
     {
         for (int j = 0; j < Status.size(); j++)
             if ((outputwith(0, Status[i]) == -1 && outputwith(0, Status[j]) != -1) || (outputwith(0, Status[j]) == -1 && outputwith(0, Status[i]) != -1) || (outputwith(1, Status[j]) == -1 && outputwith(1, Status[i]) != -1) || (outputwith(1, Status[i]) == -1 && outputwith(1, Status[j]) != -1))
@@ -135,7 +135,7 @@ MinimizedDFA* DFA::toMinimizedDFA()
                 DistinguishableTable[Status[i]][Status[j]] = DistinguishableTable[Status[j]][Status[i]] = 1;
             }
     }
-    for (int i = 0; i < terminalStatus.size(); i++) //F¡ÁF µÝ¹é±ê¼Ç
+    for (int i = 0; i < terminalStatus.size(); i++) //Fï¿½ï¿½F ï¿½Ý¹ï¿½ï¿½ï¿½
     {
         for (int j = 0; j < terminalStatus.size(); j++)
         {
@@ -152,7 +152,7 @@ MinimizedDFA* DFA::toMinimizedDFA()
                 if (DistinguishableTable[output1][output2])
                 {
                     flag1 = false;
-                    //(q,a)(p,a)ÒÑ±»±ê¼Ç
+                    //(q,a)(p,a)ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½
                     DistinguishableTable[terminalStatus[i]][terminalStatus[j]] = DistinguishableTable[terminalStatus[j]][terminalStatus[i]] = 1;
                     for (int k = 0; k < RelationList.size(); k++)
                     {
@@ -175,7 +175,7 @@ MinimizedDFA* DFA::toMinimizedDFA()
                 if (DistinguishableTable[output3][output4])
                 {
                     flag2 = false;
-                    //(q,a)(p,a)ÒÑ±»±ê¼Ç
+                    //(q,a)(p,a)ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½
                     DistinguishableTable[terminalStatus[i]][terminalStatus[j]] = DistinguishableTable[terminalStatus[j]][terminalStatus[i]] = 1;
                     for (int k = 0; k < RelationList.size(); k++)
                     {
@@ -213,7 +213,7 @@ MinimizedDFA* DFA::toMinimizedDFA()
                         RelationList.push_back(tmp);
                     }
                 }
-                if (output3 != output4 && (terminalStatus[i] != output3 && terminalStatus[j] != output4))
+                if (output3 != output4 && (terminalStatus[i] != output3 || terminalStatus[j] != output4))
                 {
                     bool flag = true;
                     for (int k = 0; k < RelationList.size(); k++)
@@ -235,7 +235,7 @@ MinimizedDFA* DFA::toMinimizedDFA()
             }
         }
     }
-    for (int i = 0; i < nonTerminalStatus.size(); i++) //Q-F ¡ÁQ-F µÝ¹é±ê¼Ç
+    for (int i = 0; i < nonTerminalStatus.size(); i++) //Q-F ï¿½ï¿½Q-F ï¿½Ý¹ï¿½ï¿½ï¿½
     {
         for (int j = 0; j < nonTerminalStatus.size(); j++)
         {
@@ -252,7 +252,7 @@ MinimizedDFA* DFA::toMinimizedDFA()
                 if (DistinguishableTable[output1][output2])
                 {
                     flag1 = false;
-                    //(q,a)(p,a)ÒÑ±»±ê¼Ç
+                    //(q,a)(p,a)ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½
 
                     DistinguishableTable[nonTerminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][nonTerminalStatus[i]] = 1;
                     queue<pair<int, int>> Q;
@@ -261,7 +261,7 @@ MinimizedDFA* DFA::toMinimizedDFA()
                     {
                         pair<int, int> tmp = Q.front();
                         Q.pop();
-                        pair<int, int> ttmp{ tmp.second, tmp.first };
+                        pair<int, int> ttmp{tmp.second, tmp.first};
                         for (int k = 0; k < RelationList.size(); k++)
                         {
                             if (RelationList[k].count(tmp))
@@ -318,7 +318,7 @@ MinimizedDFA* DFA::toMinimizedDFA()
                 if (DistinguishableTable[output3][output4])
                 {
                     flag2 = false;
-                    //(q,a)(p,a)ÒÑ±»±ê¼Ç
+                    //(q,a)(p,a)ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½
                     DistinguishableTable[nonTerminalStatus[i]][nonTerminalStatus[j]] = DistinguishableTable[nonTerminalStatus[j]][nonTerminalStatus[i]] = 1;
                     queue<pair<int, int>> Q;
                     Q.push(make_pair(nonTerminalStatus[i], nonTerminalStatus[j]));
@@ -326,7 +326,7 @@ MinimizedDFA* DFA::toMinimizedDFA()
                     {
                         pair<int, int> tmp = Q.front();
                         Q.pop();
-                        pair<int, int> ttmp{ tmp.second, tmp.first };
+                        pair<int, int> ttmp{tmp.second, tmp.first};
                         for (int k = 0; k < RelationList.size(); k++)
                         {
                             if (RelationList[k].count(tmp))
@@ -398,7 +398,7 @@ MinimizedDFA* DFA::toMinimizedDFA()
                         RelationList.push_back(tmp);
                     }
                 }
-                if (output3 != output4 && (nonTerminalStatus[i] != output3 && nonTerminalStatus[j] != output4))
+                if (output3 != output4 && (nonTerminalStatus[i] != output3 || nonTerminalStatus[j] != output4))
                 {
                     bool flag = true;
                     for (int k = 0; k < RelationList.size(); k++)
@@ -463,13 +463,13 @@ MinimizedDFA* DFA::toMinimizedDFA()
             it++;
         }
     }
-    RelationStatusList.push_back(StatusLeaved); //×´Ì¬·ÖÀàÍê³É
+    RelationStatusList.push_back(StatusLeaved); //×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     vector<vector<FANode>> newTransFunc;
-    //¿ªÊ¼ÕýÊ½×ª»¯
+    //ï¿½ï¿½Ê¼ï¿½ï¿½Ê½×ªï¿½ï¿½
 
-    converted->numOfStatus = RelationStatusList.size(); //×´Ì¬Êý
+    converted->numOfStatus = RelationStatusList.size(); //×´Ì¬ï¿½ï¿½
     for (int i = 0; i < RelationStatusList.size(); i++)
-    { //½áÊø×´Ì¬
+    { //ï¿½ï¿½ï¿½ï¿½×´Ì¬
         set<int>::iterator it = RelationStatusList[i].begin();
         while (it != RelationStatusList[i].end())
         {
@@ -483,7 +483,7 @@ MinimizedDFA* DFA::toMinimizedDFA()
         }
     }
     for (int i = 0; i < RelationStatusList.size(); i++)
-    { //¿ªÊ¼×´Ì¬
+    { //ï¿½ï¿½Ê¼×´Ì¬
         bool flag = false;
         set<int>::iterator it = RelationStatusList[i].begin();
         while (it != RelationStatusList[i].end())
@@ -512,13 +512,13 @@ MinimizedDFA* DFA::toMinimizedDFA()
             if (outputwith(0, tmp2) != -1 && !flag1)
             {
                 flag1 = true;
-                FANode tmp3{ 0, finalStatus(outputwith(0, tmp2)) };
+                FANode tmp3{0, finalStatus(outputwith(0, tmp2))};
                 tmp1.push_back(tmp3);
             }
             if (outputwith(1, tmp2) != -1 && !flag2)
             {
                 flag2 = true;
-                FANode tmp3{ 1, finalStatus(outputwith(1, tmp2)) };
+                FANode tmp3{1, finalStatus(outputwith(1, tmp2))};
                 tmp1.push_back(tmp3);
             }
             it++;
