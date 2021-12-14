@@ -67,4 +67,14 @@ $正则表达式\to \varepsilon-NFA\to NFA\to DFA\to 最小化DFA$
 ## 2021/12/12 by KarigenB
 * 感觉有一百几十年没写C++了,只能说还能根基尚在,还撑得住
 * 正经书上的转换方法,将状态合并
-* 
+
+## 2021/12/14 by zyh-hehe
+
+* 用vs生成了一个工程项目
+* 本来想用cmake的，但不知道为啥g++不支持filesystem
+* 现在只需要把已有的源码下下来，然后把整个项目共同编译一下就可以执行生成文件了
+* 附上了测试用的程序，在test_automaton文件夹下
+* 如果要进行测试，就将该文件夹打开，执行automaton_midterm.exe。输入正则文法，程序会自动将结果重定向在ans.txt中
+* 此时在sentences.txt文件中写入应得的最小状态数和用于测试的、符合输入正则文法的句子
+* 用python3执行autograde.py，会显示测试结果。
+

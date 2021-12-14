@@ -1,0 +1,6 @@
+ 0 1
+#q1 N q2 
+q2 q3 N 
+q3 q4 N 
+q4 N q5 
+*q5 q5 N 
