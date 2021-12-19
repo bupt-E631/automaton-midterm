@@ -4,20 +4,20 @@ int main() {
     fs::path p{ "re_1.txt" };
     ifstream input{ p };
     if (input.fail() == true){
-        cout << "ÎÄ¼þre_1.txtÃ»ÓÐ³É¹¦´ò¿ª£¬Çë°´ÈÎÒâ¼üÍË³ö..." << endl;
+        cout << "File re_1.txt does not open correctly,please press any key to continue..." << endl;
         getchar();
         return 0;
     }
-    cout << "ÕýÔÚ´Óre_1.txtÖÐ¶ÁÈ¡ÕýÔò±í´ïÊ½£¬ÇëÉÔºò..." << endl;
+    cout << "Reading from re_1.txt,please waiting..." << endl;
     string s;
     input >> s;
-    //Íê³Ére->×îÐ¡»¯DFAµÄ×ª»¯
+    //å®Œæˆre->æœ€å°åŒ–DFAçš„è½¬åŒ–
     RegularExpression re{ s };
     epsilon_NFA en = re.to_epsilon_NFA();
     NFA* nfa = en.toNFA();
     DFA* dfa = nfa->toDFA(true);
     MinimizedDFA* mdfa = dfa->toMinimizedDFA();
-    //½«Êä³öÖØ¶¨Ïòµ½ÎÄ¼þ
+    //å°†è¾“å‡ºé‡å®šå‘åˆ°æ–‡ä»¶
     output_file(mdfa);
     //system("to_pic.bat");
     system("echo strict digraph res{ > res.dot");
@@ -26,7 +26,7 @@ int main() {
     system("dot -Tpng res.dot -o output_result/dfa.png");
     system("del res.dot");
     system("del graphviz.txt");
-    cout << "Éú³ÉÒÑÍê³É£¬Çë°´ÈÎÒâ¼üÍË³ö..." << endl;
+    cout << "Build completed,please press any key to continue..." << endl;
     getchar();
     return 0;
 }

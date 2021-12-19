@@ -1,7 +1,7 @@
 #include"output.h"
 
 void output_file(MinimizedDFA* mdfa) {
-    //ÏÈÖØ¶¨ÏòÊä³ö×îĞ¡»¯DFA
+    //å…ˆé‡å®šå‘è¾“å‡ºæœ€å°åŒ–DFA
     system("mkdir output_result");
     fs::path p{ "output_result\\ans.txt" };
     ofstream output{ p };
@@ -43,7 +43,7 @@ void output_file(MinimizedDFA* mdfa) {
         output << '\n';
     }
     output.close();
-    //ÔÙÖØ¶¨ÏòÊä³öÕıÔòÎÄ·¨
+    //å†é‡å®šå‘è¾“å‡ºæ­£åˆ™æ–‡æ³•
     output.open("output_result\\rg.txt");
     for (int i = 0; i < mdfa->numOfStatus; i++) {
         output << static_cast<char>(i + 65) << " > ";
@@ -69,7 +69,7 @@ void output_file(MinimizedDFA* mdfa) {
         output << endl;
     }
     output.close();
-    //×îºóÖØ¶¨ÏòÊä³öÓÃÓÚ»æÍ¼µÄÎÄ¼ş
+    //æœ€åé‡å®šå‘è¾“å‡ºç”¨äºç»˜å›¾çš„æ–‡ä»¶
     output.open("graphviz.txt");
     output << "start" << " [shape=circle style=filled fillcolor=red]\n";
     for (int i = 0; i < mdfa->numOfStatus; i++) {
