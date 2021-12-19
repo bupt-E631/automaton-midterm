@@ -78,3 +78,6 @@ $正则表达式\to \varepsilon-NFA\to NFA\to DFA\to 最小化DFA$
 * 此时在sentences.txt文件中写入应得的最小状态数和用于测试的、符合输入正则文法的句子
 * 用python3执行autograde.py，会显示测试结果。
 
+## 2021/12/19 by zyh-hehe
+
+* 最后提交的版本
