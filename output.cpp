@@ -101,4 +101,26 @@ void output_file(MinimizedDFA* mdfa) {
         output << endl;
     }
     output.close();
+    output.open("graphviz.txt");
+    output << "start" << " [shape=circle style=filled fillcolor=red]\n";
+    for (int i = 0; i < mdfa->numOfStatus; i++) {
+        if (endStatus.count(i))
+            output << 'q' << i + 1 << " [shape=doublecircle]\n";
+        else
+            output << 'q' << i + 1 << " [shape=circle]\n";
+    }
+    output << "start" << " -> " << 'q' << mdfa->beginStatus + 1 << '\n';
+    for (int i = 0; i < mdfa->numOfStatus; i++) {
+        try {
+            int temp = transFunction[i].at(0);
+            output << 'q' << i + 1 << " -> " << 'q' << temp + 1 << " [label=0]\n";
+        }
+        catch (out_of_range) {  }
+        try {
+            int temp = transFunction[i].at(1);
+            output << 'q' << i + 1 << " -> " << 'q' << temp + 1 << " [label=1]\n";
+        }
+        catch (out_of_range) {  }
+    }
+    output.close();
 }
