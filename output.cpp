@@ -1,6 +1,6 @@
 #include"output.h"
 
-void output(MinimizedDFA* mdfa, bool whetherOutPutRL) {
+void output(MinimizedDFA* mdfa) {
     set<int> endStatus;
     vector <map<int, int>> transFunction;
     for (auto x : mdfa->terminalStatus)
@@ -40,7 +40,7 @@ void output(MinimizedDFA* mdfa, bool whetherOutPutRL) {
     }
 }
 
-void output_file(MinimizedDFA* mdfa, bool whetherOutPutRL) {
+void output_file(MinimizedDFA* mdfa) {
     fs::path p{ "ans.txt" };
     ofstream output{ p };
     set<int> endStatus;
@@ -53,31 +53,52 @@ void output_file(MinimizedDFA* mdfa, bool whetherOutPutRL) {
             temp.insert({ x.input,x.output });
         transFunction.push_back(temp);
     }
-    output << ' ' << 0 << ' ' << 1 << '\n';
+    output << '\t' << 0 << '\t' << 1 << '\n';
     for (int i = 0; i < mdfa->numOfStatus; i++) {
         if (i == mdfa->beginStatus)
             output << '#';
-        /*else
-            output << ' ';*/
+        else
+            output << ' ';
         if (endStatus.count(i))
             output << '*';
-        /*else
-            output << ' ';*/
-        output << 'q' << i + 1 << ' ';
+        else
+            output << ' ';
+        output << 'q' << i + 1 << '\t';
         try {
             int temp = transFunction[i].at(0);
-            output << 'q' << temp + 1 << ' ';
+            output << 'q' << temp + 1 << '\t';
         }
         catch (out_of_range) {
-            output << "N ";
+            output << "N "<<'\t';
         }
         try {
             int temp = transFunction[i].at(1);
-            output << 'q' << temp + 1 << ' ';
+            output << 'q' << temp + 1 << '\t';
         }
         catch (out_of_range) {
             output << "N ";
         }
         output << '\n';
     }
+    output.close();
+    output.open("re.txt");
+    for (int i = 0; i < mdfa->numOfStatus; i++) {
+        output << static_cast<char>(i + 65) << " > ";
+        try {
+            int temp = transFunction[i].at(0);
+            output << 0 << static_cast<char>(temp + 65) << '|';
+        }
+        catch (out_of_range) {
+            output << 0 << '|';
+        }
+        try {
+            int temp = transFunction[i].at(1);
+            output << 1 <<static_cast<char>(temp + 65) ;
+        }
+        catch (out_of_range) {
+            output << 1 ;
+        }
+        output << endl;
+    }
+    output.close();
 }

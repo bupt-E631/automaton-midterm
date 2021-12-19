@@ -7,7 +7,7 @@
 #include<exception>
 namespace fs = std::filesystem;
 
-void output(MinimizedDFA*, bool);
+void output(MinimizedDFA*);
 
-void output_file(MinimizedDFA*, bool);
+void output_file(MinimizedDFA*);
 

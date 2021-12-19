@@ -103,7 +103,7 @@ MinimizedDFA *DFA::toMinimizedDFA()
 {
     MinimizedDFA *converted = new MinimizedDFA();
     removeUnrelatedStatus();
-    display();
+    //display();
     for (int i = 0; i < numOfStatus; i++) //��ʼ�����ֱ�
     {
         vector<int> tmp;
@@ -530,8 +530,8 @@ MinimizedDFA *DFA::toMinimizedDFA()
 
         converted->Status.push_back(i);
     }
-    mydisplay();
-    converted->display();
+    //mydisplay();
+    //converted->display();
 
     converted->removeUnrelatedStatus();
 
