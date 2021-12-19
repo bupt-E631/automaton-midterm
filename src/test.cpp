@@ -19,7 +19,6 @@ int main() {
     MinimizedDFA* mdfa = dfa->toMinimizedDFA();
     //将输出重定向到文件
     output_file(mdfa);
-    //system("to_pic.bat");
     system("echo strict digraph res{ > res.dot");
     system("type graphviz.txt >> res.dot");
     system("echo } >> res.dot");
