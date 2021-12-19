@@ -1,47 +1,9 @@
 #include"output.h"
 
-void output(MinimizedDFA* mdfa) {
-    set<int> endStatus;
-    vector <map<int, int>> transFunction;
-    for (auto x : mdfa->terminalStatus)
-        endStatus.insert(x);
-    for (int i = 0; i < mdfa->numOfStatus; i++) {
-        map<int, int> temp;
-        for (auto& x : mdfa->transFunc[i])
-            temp.insert({ x.input,x.output });
-        transFunction.push_back(temp);
-    }
-    cout << '\t' << 0 << '\t' << 1 << endl;
-    for (int i = 0; i < mdfa->numOfStatus; i++) {
-        if (i == mdfa->beginStatus)
-            cout << '#';
-        else
-            cout << ' ';
-        if (endStatus.count(i))
-            cout << '*';
-        else
-            cout << ' ';
-        cout << 'q' << i + 1 << "   ";
-        try {
-            int temp = transFunction[i].at(0);
-            cout << 'q' << temp + 1 << "\t";
-        }
-        catch (out_of_range) {
-            cout << "N\t";
-        }
-        try {
-            int temp = transFunction[i].at(1);
-            cout << 'q' << temp + 1 << "\t";
-        }
-        catch (out_of_range) {
-            cout << "N\t";
-        }
-        cout << endl;
-    }
-}
-
 void output_file(MinimizedDFA* mdfa) {
-    fs::path p{ "ans.txt" };
+    //先重定向输出最小化DFA
+    system("mkdir output_result");
+    fs::path p{ "output_result\\ans.txt" };
     ofstream output{ p };
     set<int> endStatus;
     vector <map<int, int>> transFunction;
@@ -81,7 +43,8 @@ void output_file(MinimizedDFA* mdfa) {
         output << '\n';
     }
     output.close();
-    output.open("rg.txt");
+    //再重定向输出正则文法
+    output.open("output_result\\rg.txt");
     for (int i = 0; i < mdfa->numOfStatus; i++) {
         output << static_cast<char>(i + 65) << " > ";
         try {
@@ -106,6 +69,7 @@ void output_file(MinimizedDFA* mdfa) {
         output << endl;
     }
     output.close();
+    //最后重定向输出用于绘图的文件
     output.open("graphviz.txt");
     output << "start" << " [shape=circle style=filled fillcolor=red]\n";
     for (int i = 0; i < mdfa->numOfStatus; i++) {

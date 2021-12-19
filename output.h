@@ -5,9 +5,8 @@
 #include<iostream>
 #include<stdexcept>
 #include<exception>
+#include<stdlib.h>
 namespace fs = std::filesystem;
-
-void output(MinimizedDFA*);
 
 void output_file(MinimizedDFA*);
 
