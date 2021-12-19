@@ -81,23 +81,28 @@ void output_file(MinimizedDFA* mdfa) {
         output << '\n';
     }
     output.close();
-    output.open("re.txt");
+    output.open("rg.txt");
     for (int i = 0; i < mdfa->numOfStatus; i++) {
         output << static_cast<char>(i + 65) << " > ";
         try {
             int temp = transFunction[i].at(0);
-            output << 0 << static_cast<char>(temp + 65) << '|';
+            output << 0 << static_cast<char>(temp + 65);
+            if (endStatus.count(temp))
+                output << "|0";
         }
-        catch (out_of_range) {
-            output << 0 << '|';
-        }
+        catch (out_of_range) {    }
         try {
             int temp = transFunction[i].at(1);
+            try {
+                int temp = transFunction[i].at(0);
+                output << '|';
+            }
+            catch (out_of_range) {}
             output << 1 <<static_cast<char>(temp + 65) ;
+            if (endStatus.count(temp))
+                output << "|1";
         }
-        catch (out_of_range) {
-            output << 1 ;
-        }
+        catch (out_of_range) {    }
         output << endl;
     }
     output.close();
